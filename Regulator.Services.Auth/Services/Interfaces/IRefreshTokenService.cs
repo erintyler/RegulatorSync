@@ -1,7 +1,10 @@
-﻿namespace Regulator.Services.Auth.Services;
+﻿using Regulator.Services.Auth.Models;
+using Regulator.Services.Shared.Models;
+
+namespace Regulator.Services.Auth.Services.Interfaces;
 
 public interface IRefreshTokenService
 {
-    Task<string> GenerateRefreshToken(string discordId, CancellationToken cancellationToken = default);
-    Task<bool> ValidateRefreshToken(string discordId, string refreshToken, CancellationToken cancellationToken = default);
+    Task<Result<Token>> GenerateRefreshTokenAsync(string discordId, CancellationToken cancellationToken = default);
+    Task<Result> ValidateRefreshToken(string discordId, string refreshToken, CancellationToken cancellationToken = default);
 }

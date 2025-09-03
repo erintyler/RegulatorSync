@@ -1,6 +1,3 @@
 ﻿namespace Regulator.Services.Auth.Dtos.Responses;
 
-public class AccessTokenResponseDto
-{
-    
-}
+public record TokenResponseDto(string AccessToken, DateTime AccessTokenExpiry, string RefreshToken, DateTime RefreshTokenExpiry);

@@ -1,6 +1,3 @@
 ﻿namespace Regulator.Services.Auth.Dtos.Requests;
 
-public class RefreshRequestDto
-{
-    
-}
+public record RefreshRequestDto(string DiscordId, string RefreshToken);

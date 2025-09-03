@@ -1,6 +1,8 @@
-﻿namespace Regulator.Data.DynamoDb.Repositories.Interfaces;
+﻿using Regulator.Data.DynamoDb.Models;
 
-public interface IUserRepository
+namespace Regulator.Data.DynamoDb.Repositories.Interfaces;
+
+public interface IUserRepository : IHashKeyRepository<string, User>
 {
     
 }

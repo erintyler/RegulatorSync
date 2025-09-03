@@ -1,6 +1,3 @@
 ﻿namespace Regulator.Storage.Models.Configuration;
 
-public class OfficialStoreSettings
-{
-    
-}
+public record OfficialStoreSettings(string BucketName, int MaxFileSizeInBytes, string[] AllowedFileExtensions, int PresignedUrlExpiryInMinutes);

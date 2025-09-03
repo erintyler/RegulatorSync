@@ -1,3 +1,3 @@
 ﻿namespace Regulator.Services.Auth.Models;
 
-public record RefreshToken(string Token, DateTime Expiry);
+public record Token(string TokenValue, DateTime Expiry);

@@ -1,6 +1,9 @@
-﻿namespace Regulator.Services.Auth.Services;
+﻿using Regulator.Services.Auth.Models;
+using Regulator.Services.Shared.Models;
+
+namespace Regulator.Services.Auth.Services.Interfaces;
 
 public interface IAccessTokenService
 {
-    Task<string> GenerateAccessToken(string discordId, CancellationToken cancellationToken = default);
+    Task<Result<Token>> GenerateAccessTokenAsync(CancellationToken cancellationToken = default);
 }

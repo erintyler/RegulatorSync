@@ -2,6 +2,31 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Server", "Regulator.Server\Regulator.Server.csproj", "{F034C848-C765-4F7D-9D6D-0AC59F027B50}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1924035E-2C32-497B-B3E5-CF8603FA0752}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Data.Redis", "Regulator.Data.Redis\Regulator.Data.Redis.csproj", "{A0767268-211E-4B02-80AF-15EF602101FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Data.DynamoDb", "Regulator.Data.DynamoDb\Regulator.Data.DynamoDb.csproj", "{4CFE8C19-2832-4D53-9879-29F5DCD14314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Storage", "Regulator.Storage\Regulator.Storage.csproj", "{F23E6140-9BD1-4C5B-ADBC-440F661907CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Auth", "Regulator.Services.Auth\Regulator.Services.Auth.csproj", "{02BE3471-02C4-47F4-8200-36F0C9E8B600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Shared", "Regulator.Services.Shared\Regulator.Services.Shared.csproj", "{BC2E6F1C-27A1-4CAD-8623-BD1A17C5C49C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6B21B6D6-0E88-420C-AA47-EA684A243E39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Auth.UnitTests", "Regulator.Services.Auth.UnitTests\Regulator.Services.Auth.UnitTests.csproj", "{88D293A1-4E33-4334-92E7-E3E34421FA5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Shared", "Regulator.Shared\Regulator.Shared.csproj", "{2419988C-BC79-457C-BB3F-0499445AA03A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Shared.UnitTests", "Regulator.Services.Shared.UnitTests\Regulator.Services.Shared.UnitTests.csproj", "{52852C5C-DF2D-4415-BDF3-272F7723CBEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Tests.Utilities", "Regulator.Tests.Utilities\Regulator.Tests.Utilities.csproj", "{359F36C5-5DBD-48ED-9024-82C28234F787}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +37,46 @@ Global
 		{F034C848-C765-4F7D-9D6D-0AC59F027B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F034C848-C765-4F7D-9D6D-0AC59F027B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F034C848-C765-4F7D-9D6D-0AC59F027B50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0767268-211E-4B02-80AF-15EF602101FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0767268-211E-4B02-80AF-15EF602101FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0767268-211E-4B02-80AF-15EF602101FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0767268-211E-4B02-80AF-15EF602101FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CFE8C19-2832-4D53-9879-29F5DCD14314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CFE8C19-2832-4D53-9879-29F5DCD14314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CFE8C19-2832-4D53-9879-29F5DCD14314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CFE8C19-2832-4D53-9879-29F5DCD14314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23E6140-9BD1-4C5B-ADBC-440F661907CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23E6140-9BD1-4C5B-ADBC-440F661907CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23E6140-9BD1-4C5B-ADBC-440F661907CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23E6140-9BD1-4C5B-ADBC-440F661907CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02BE3471-02C4-47F4-8200-36F0C9E8B600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02BE3471-02C4-47F4-8200-36F0C9E8B600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02BE3471-02C4-47F4-8200-36F0C9E8B600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02BE3471-02C4-47F4-8200-36F0C9E8B600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC2E6F1C-27A1-4CAD-8623-BD1A17C5C49C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2E6F1C-27A1-4CAD-8623-BD1A17C5C49C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2E6F1C-27A1-4CAD-8623-BD1A17C5C49C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2E6F1C-27A1-4CAD-8623-BD1A17C5C49C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88D293A1-4E33-4334-92E7-E3E34421FA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D293A1-4E33-4334-92E7-E3E34421FA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D293A1-4E33-4334-92E7-E3E34421FA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D293A1-4E33-4334-92E7-E3E34421FA5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2419988C-BC79-457C-BB3F-0499445AA03A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2419988C-BC79-457C-BB3F-0499445AA03A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2419988C-BC79-457C-BB3F-0499445AA03A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2419988C-BC79-457C-BB3F-0499445AA03A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52852C5C-DF2D-4415-BDF3-272F7723CBEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52852C5C-DF2D-4415-BDF3-272F7723CBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52852C5C-DF2D-4415-BDF3-272F7723CBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52852C5C-DF2D-4415-BDF3-272F7723CBEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{359F36C5-5DBD-48ED-9024-82C28234F787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{359F36C5-5DBD-48ED-9024-82C28234F787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{359F36C5-5DBD-48ED-9024-82C28234F787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{359F36C5-5DBD-48ED-9024-82C28234F787}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{88D293A1-4E33-4334-92E7-E3E34421FA5E} = {6B21B6D6-0E88-420C-AA47-EA684A243E39}
+		{52852C5C-DF2D-4415-BDF3-272F7723CBEE} = {6B21B6D6-0E88-420C-AA47-EA684A243E39}
+		{359F36C5-5DBD-48ED-9024-82C28234F787} = {6B21B6D6-0E88-420C-AA47-EA684A243E39}
 	EndGlobalSection
 EndGlobal

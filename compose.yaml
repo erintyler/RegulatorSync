@@ -1,0 +1,18 @@
+﻿services:
+  regulator.server:
+    image: regulator.server
+    build:
+      context: .
+      dockerfile: Regulator.Server/Dockerfile
+  seq:
+    image: datalust/seq:latest
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    volumes:
+      - seq-data:/data
+
+volumes:
+  seq-data:

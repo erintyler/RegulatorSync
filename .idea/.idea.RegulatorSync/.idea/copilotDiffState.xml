@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/Regulator.Server/Controllers/AuthController.cs">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/Regulator.Server/Controllers/AuthController.cs" />
+              <option name="updatedContent" value="using Microsoft.AspNetCore.Mvc;&#10;using Microsoft.Extensions.Configuration;&#10;using Microsoft.IdentityModel.Tokens;&#10;using System.IdentityModel.Tokens.Jwt;&#10;using System.Security.Claims;&#10;using System.Text;&#10;&#10;namespace Regulator.Server.Controllers&#10;{&#10;    [ApiController]&#10;    [Route(&quot;api/[controller]&quot;)]&#10;    public class AuthController : ControllerBase&#10;    {&#10;        private readonly IConfiguration _config;&#10;&#10;        public AuthController(IConfiguration config)&#10;        {&#10;            _config = config;&#10;        }&#10;&#10;        [HttpPost(&quot;token&quot;)]&#10;        public IActionResult GenerateToken([FromBody] TokenRequest request)&#10;        {&#10;            if (string.IsNullOrWhiteSpace(request.Username))&#10;                return BadRequest(&quot;Username is required.&quot;);&#10;&#10;            var jwtSettings = _config.GetSection(&quot;Jwt&quot;);&#10;            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[&quot;Key&quot;]));&#10;            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);&#10;&#10;            var claims = new[]&#10;            {&#10;                new Claim(JwtRegisteredClaimNames.Sub, request.Username),&#10;                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),&#10;                new Claim(JwtRegisteredClaimNames.Iss, jwtSettings[&quot;Issuer&quot;]),&#10;                new Claim(JwtRegisteredClaimNames.Aud, jwtSettings[&quot;Audience&quot;])&#10;            };&#10;&#10;            var token = new JwtSecurityToken(&#10;                issuer: jwtSettings[&quot;Issuer&quot;],&#10;                audience: jwtSettings[&quot;Audience&quot;],&#10;                claims: claims,&#10;                expires: DateTime.UtcNow.AddHours(1),&#10;                signingCredentials: creds&#10;            );&#10;&#10;            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);&#10;            return Ok(new { token = tokenString });&#10;        }&#10;    }&#10;&#10;    public class TokenRequest&#10;    {&#10;        public string Username { get; set; } = string.Empty;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

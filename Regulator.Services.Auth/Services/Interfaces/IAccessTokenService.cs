@@ -5,5 +5,5 @@ namespace Regulator.Services.Auth.Services.Interfaces;
 
 public interface IAccessTokenService
 {
-    Task<Result<Token>> GenerateAccessTokenAsync(CancellationToken cancellationToken = default);
+    Task<Result<Token>> GenerateAccessTokenAsync(ulong characterId, CancellationToken cancellationToken = default);
 }

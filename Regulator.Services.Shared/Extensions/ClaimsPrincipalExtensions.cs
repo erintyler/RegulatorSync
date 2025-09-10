@@ -9,4 +9,9 @@ public static class ClaimsPrincipalExtensions
     {
         return user.FindFirstValue(RegulatorClaimTypes.DiscordId) ?? throw new InvalidOperationException("User does not have a Discord ID claim.");
     }
+    
+    public static string GetSyncCode(this ClaimsPrincipal user)
+    {
+        return user.FindFirstValue(RegulatorClaimTypes.SyncCode) ?? throw new InvalidOperationException("User does not have a Sync Code claim.");
+    }
 }

@@ -3,9 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Regulator.Services.Auth.Configuration.Models;
 using Regulator.Services.Auth.Models;
 using Regulator.Services.Auth.Services.Interfaces;
+using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Constants;
 using Regulator.Services.Shared.Models;
 using Regulator.Services.Shared.Services.Interfaces;
@@ -14,7 +14,7 @@ namespace Regulator.Services.Auth.Services;
 
 public class AccessTokenService(IUserContextService userContextService, IOptions<TokenSettings> tokenSettings, ILogger<AccessTokenService> logger) : IAccessTokenService
 {
-    public async Task<Result<Token>> GenerateAccessTokenAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<Token>> GenerateAccessTokenAsync(ulong characterId, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -28,7 +28,7 @@ public class AccessTokenService(IUserContextService userContextService, IOptions
             
             var user = userResult.Value;
             
-            var token = GenerateJwtToken(user.DiscordId);
+            var token = GenerateJwtToken(user.DiscordId, characterId, user.SyncCode);
         
             logger.LogInformation("Generated access token for User: {DiscordId} with Expiry: {Expiry}", user.DiscordId, token.Expiry);
         
@@ -41,11 +41,13 @@ public class AccessTokenService(IUserContextService userContextService, IOptions
         }
     }
     
-    private Token GenerateJwtToken(string discordId)
+    private Token GenerateJwtToken(string discordId, ulong characterId, string syncCode)
     {
         var claims = new[]
         {
-            new Claim(RegulatorClaimTypes.DiscordId, discordId)
+            new Claim(RegulatorClaimTypes.DiscordId, discordId),
+            new Claim(RegulatorClaimTypes.CharacterId, characterId.ToString()),
+            new Claim(RegulatorClaimTypes.SyncCode, syncCode)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Value.Secret));

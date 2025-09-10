@@ -6,8 +6,8 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Regulator.Data.DynamoDb.Models;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
-using Regulator.Services.Auth.Configuration.Models;
 using Regulator.Services.Auth.Services;
+using Regulator.Services.Shared.Configuration.Models;
 
 namespace Regulator.Services.Auth.UnitTests.Services;
 
@@ -21,13 +21,14 @@ public class RefreshTokenServiceTests
     
     public RefreshTokenServiceTests()
     {
-        _mockTokenSettings.Setup(x => x.Value).Returns(new TokenSettings(
-            _fixture.Create<int>(),
-            _fixture.Create<int>(),
-            _fixture.Create<string>(),
-            _fixture.Create<string>(),
-            _fixture.Create<string>()
-            ));
+        _mockTokenSettings.Setup(x => x.Value).Returns(new TokenSettings
+        {
+            AccessTokenExpirationMinutes = _fixture.Create<int>(),
+            RefreshTokenExpirationDays = _fixture.Create<int>(),
+            Secret = _fixture.Create<string>(),
+            Issuer = _fixture.Create<string>(),
+            Audience = _fixture.Create<string>()
+        });
         
         _sut = new RefreshTokenService(_mockUserRepository.Object, _mockTokenSettings.Object, _mockLogger.Object);
     }

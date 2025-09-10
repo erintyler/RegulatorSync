@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
-using Regulator.Services.Auth.Configuration.Models;
 using Regulator.Services.Auth.Models;
 using Regulator.Services.Auth.Services.Interfaces;
+using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Models;
 
 namespace Regulator.Services.Auth.Services;

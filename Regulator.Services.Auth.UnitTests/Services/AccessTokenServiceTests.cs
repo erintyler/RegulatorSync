@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Regulator.Data.DynamoDb.Models;
-using Regulator.Services.Auth.Configuration.Models;
 using Regulator.Services.Auth.Models;
 using Regulator.Services.Auth.Services;
+using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Constants;
 using Regulator.Services.Shared.Models;
 using Regulator.Services.Shared.Services.Interfaces;
@@ -23,13 +23,14 @@ public class AccessTokenServiceTests
 
     public AccessTokenServiceTests()
     {
-        _mockTokenSettings.Setup(x => x.Value).Returns(new TokenSettings(
-            _fixture.Create<int>(),
-            _fixture.Create<int>(),
-            _fixture.Create<string>(),
-            _fixture.Create<string>(),
-            _fixture.Create<string>()
-            ));
+        _mockTokenSettings.Setup(x => x.Value).Returns(new TokenSettings
+        {
+            AccessTokenExpirationMinutes = _fixture.Create<int>(),
+            RefreshTokenExpirationDays = _fixture.Create<int>(),
+            Secret = _fixture.Create<string>(),
+            Issuer = _fixture.Create<string>(),
+            Audience = _fixture.Create<string>()
+        });
         
         _sut = new AccessTokenService(_mockUserContextService.Object, _mockTokenSettings.Object, _mockLogger.Object);
     }
@@ -43,7 +44,7 @@ public class AccessTokenServiceTests
             .ReturnsAsync(Result<User>.Success(new User { DiscordId = discordId, SyncCode = _fixture.Create<string>()}));
 
         // Act
-        var result = await _sut.GenerateAccessTokenAsync(TestContext.Current.CancellationToken);
+        var result = await _sut.GenerateAccessTokenAsync(TODO, TestContext.Current.CancellationToken);
 
         // Assert
         _mockUserContextService.Verify(x => x.GetCurrentUserAsync(It.IsAny<CancellationToken>()), Times.Once);

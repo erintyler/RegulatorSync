@@ -3,12 +3,15 @@ using Regulator.Data.DynamoDb.Enums;
 
 namespace Regulator.Data.DynamoDb.Models;
 
+[DynamoDBTable("Users")]
 public class User
 {
+    public const string SyncCodeIndexName = "SyncCodeIndex";
+    
     [DynamoDBHashKey]
     public required string DiscordId { get; set; }
     
-    [DynamoDBGlobalSecondaryIndexHashKey]
+    [DynamoDBGlobalSecondaryIndexHashKey(SyncCodeIndexName)]
     public required string SyncCode { get; set; }
 
     public List<string> AddedSyncCodes { get; set; } = [];

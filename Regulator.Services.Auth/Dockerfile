@@ -26,4 +26,4 @@ RUN dotnet publish "./Regulator.Services.Auth.csproj" -c $BUILD_CONFIGURATION -o
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["Regulator.Services.Auth"]
+ENTRYPOINT ["/app/Regulator.Services.Auth"]

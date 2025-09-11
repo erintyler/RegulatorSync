@@ -74,6 +74,7 @@ jobs:
             DownloadLinkInstall = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
             DownloadLinkUpdate = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
             DalamudApiLevel = 13
+            AssemblyVersion = "${{ github.ref_name }}.0"
           }
           @($repo) | ConvertTo-Json -AsArray -Depth 3 | Set-Content repo.json
           git config --global user.name "github-actions[bot]"

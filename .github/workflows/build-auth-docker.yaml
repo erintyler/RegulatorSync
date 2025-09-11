@@ -39,7 +39,7 @@ jobs:
         run: |
           docker save -o auth-service-image.tar regulator/auth-service:${{ github.sha }}
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: auth-service-image
           path: auth-service-image.tar

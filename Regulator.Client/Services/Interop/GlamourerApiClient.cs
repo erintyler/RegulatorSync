@@ -65,7 +65,7 @@ public class GlamourerApiClient : IGlamourerApiClient
 
     public async Task<GlamourerApiEc> ApplyCustomizationsAsync(string syncCode, string customizations)
     {
-        var player = _playerProvider.GetPlayerBySyncCode(syncCode);
+        var player = _playerProvider.GetCachedPlayerBySyncCode(syncCode);
         
         if (player is null)
         {

@@ -2,10 +2,10 @@
 
 namespace Regulator.Services.Shared.Models;
 
-public class Result<T>(bool isSuccess, T? value, string? errorMessage, int statusCode) where T : class
+public class Result<T>(bool isSuccess, T? value, string? errorMessage, int statusCode)
 {
     public static Result<T> Success(T value) => new(true, value, null, 200);
-    public static Result<T> Failure(string errorMessage, int statusCode = 500) => new(false, null, errorMessage, statusCode);
+    public static Result<T> Failure(string errorMessage, int statusCode = 500) => new(false, default, errorMessage, statusCode);
     
     [MemberNotNullWhen(true, nameof(Value))]
     [MemberNotNullWhen(false, nameof(ErrorMessage))]

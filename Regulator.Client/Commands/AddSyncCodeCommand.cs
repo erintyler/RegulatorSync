@@ -1,12 +1,14 @@
 ﻿using Dalamud.Plugin.Services;
 using Microsoft.Extensions.Logging;
+using Regulator.Client.Events.Client.Management;
+using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Commands;
 
 public class AddSyncCodeCommand(
-    IRegulatorServerMethods client,
+    IMediator mediator,
     ICommandManager commandManager, 
     ILogger<AddSyncCodeCommand> logger) : BaseCommand(commandManager, logger)
 {
@@ -15,11 +17,6 @@ public class AddSyncCodeCommand(
     
     public override void OnCommand(string command, string args)
     {
-        var dto = new AddSyncCodeDto
-        {
-            TargetSyncCode = args.Trim()
-        };
-
-        client.AddSyncCodeAsync(dto);
+        mediator.PublishAsync(new AddSyncCode(args.Trim()));
     }
 }

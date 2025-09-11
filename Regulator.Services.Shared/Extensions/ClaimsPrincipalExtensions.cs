@@ -14,4 +14,15 @@ public static class ClaimsPrincipalExtensions
     {
         return user.FindFirstValue(RegulatorClaimTypes.SyncCode) ?? throw new InvalidOperationException("User does not have a Sync Code claim.");
     }
+    
+    public static ulong GetCharacterId(this ClaimsPrincipal user)
+    {
+        var characterIdClaim = user.FindFirstValue(RegulatorClaimTypes.CharacterId);
+        if (characterIdClaim == null || !ulong.TryParse(characterIdClaim, out var characterId))
+        {
+            throw new InvalidOperationException("User does not have a valid Character ID claim.");
+        }
+
+        return characterId;
+    }
 }

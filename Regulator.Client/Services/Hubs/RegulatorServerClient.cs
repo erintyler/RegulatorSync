@@ -11,12 +11,15 @@ using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+using Regulator.Services.Sync.Shared.Enums;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Services.Hubs;
 
 public class RegulatorServerClient(HubConnection connection, IAccessTokenProvider accessTokenProvider, IMediator mediator, ILogger<RegulatorServerClient> logger) : IRegulatorServerMethods, IHostedService, IDisposable
 {
+    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
+    
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         try 
@@ -31,7 +34,9 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
                 return;
             }
             
+            ConnectionState = ConnectionState.Connecting;
             await connection.StartAsync(cancellationToken);
+            ConnectionState = ConnectionState.Connected;
             logger.LogInformation("Connected to Regulator with connection ID: {ConnectionId}", connection.ConnectionId);
             
             await SendConnectedNotification(cancellationToken);
@@ -39,8 +44,9 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to connect to Regulator server hub.");
+            ConnectionState = ConnectionState.Disconnected;
 
-            await SendFailedToConnectNotification(cancellationToken);
+            await SendFailedToConnectNotification(ex, cancellationToken);
         }
     }
 
@@ -49,6 +55,7 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         try 
         {
             await connection.StopAsync(cancellationToken);
+            ConnectionState = ConnectionState.Disconnected;
         }
         catch (Exception ex)
         {
@@ -71,10 +78,13 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
             if (connection.State == HubConnectionState.Connected)
             {
                 await connection.StopAsync();
+                ConnectionState = ConnectionState.Disconnected;
             }
         
             logger.LogInformation("Connecting to Regulator with new access token...");
+            ConnectionState = ConnectionState.Connecting;
             await connection.StartAsync();
+            ConnectionState = ConnectionState.Connected;
             logger.LogInformation("Connected to Regulator with new access token.");
             
             await SendConnectedNotification(CancellationToken.None);
@@ -82,10 +92,11 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to reconnect to Regulator server hub with new access token.");
-            await SendFailedToConnectNotification(CancellationToken.None);
+            ConnectionState = ConnectionState.Disconnected;
+            await SendFailedToConnectNotification(ex, CancellationToken.None);
         }
     }
-    
+
     public async Task NotifyCustomizationsResetAsync(CustomizationsResetDto dto)
     {
         await connection.SendAsync(nameof(NotifyCustomizationsResetAsync), dto);
@@ -101,9 +112,14 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         await connection.SendAsync(nameof(RequestCustomizationsAsync), dto);
     }
 
-    public async Task AddSyncCodeAsync(AddSyncCodeDto dto)
+    public async Task AddSyncCodeAsync(SyncRequestDto dto)
     {
         await connection.SendAsync(nameof(AddSyncCodeAsync), dto);
+    }
+
+    public async Task RespondToSyncRequestAsync(SyncRequestResponseDto dto)
+    {
+        await connection.SendAsync(nameof(RespondToSyncRequestAsync), dto);
     }
 
     private void BindEventHandlers()
@@ -113,12 +129,14 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         connection.Reconnecting += ex =>
         {
             logger.LogWarning(ex, "Reconnecting to Regulator...");
+            ConnectionState = ConnectionState.Reconnecting;
             return Task.CompletedTask;
         };
             
         connection.Reconnected += connectionId =>
         {
             logger.LogInformation("Reconnected to Regulator with connection ID: {ConnectionId}", connectionId);
+            ConnectionState = ConnectionState.Connected;
             return Task.CompletedTask;
         };
             
@@ -132,6 +150,8 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
             {
                 logger.LogInformation("Connection to Regulator closed.");
             }
+            
+            ConnectionState = ConnectionState.Disconnected;
 
             return Task.CompletedTask;
         };
@@ -143,9 +163,9 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         await mediator.PublishAsync(notification, cancellationToken);
     }
 
-    private async Task SendFailedToConnectNotification(CancellationToken cancellationToken)
+    private async Task SendFailedToConnectNotification(Exception ex, CancellationToken cancellationToken)
     {
-        var notification = new NotificationMessage("Failed to connect to Regulator server. Check logs for details.", Type: NotificationType.Error);
+        var notification = new NotificationMessage("Failed to connect to Regulator server", ex.Message, Type: NotificationType.Error);
         await mediator.PublishAsync(notification, cancellationToken);
     }
 

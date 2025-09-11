@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Regulator.Data.Redis\Regulator.Data.Redis.csproj" />
       <ProjectReference Include="..\Regulator.Services.Shared\Regulator.Services.Shared.csproj" />
       <ProjectReference Include="..\Regulator.Services.Sync.Shared\Regulator.Services.Sync.Shared.csproj" />
     </ItemGroup>

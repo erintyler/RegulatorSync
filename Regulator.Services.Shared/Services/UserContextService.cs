@@ -14,7 +14,7 @@ public class UserContextService(IHttpContextAccessor contextAccessor, IUserCreat
     
     public async Task<Result<User>> GetCurrentUserAsync(CancellationToken cancellationToken = default)
     {
-        var user = contextAccessor.HttpContext.User;
+        var user = contextAccessor.HttpContext?.User;
         
         if (user?.Identity is null || !user.Identity.IsAuthenticated)
         {
@@ -47,5 +47,18 @@ public class UserContextService(IHttpContextAccessor contextAccessor, IUserCreat
         _currentUser = creationResult.Value;
 
         return Result<User>.Success(_currentUser);
+    }
+
+    public Result<ulong> GetCurrentCharacterId()
+    {
+        var user = contextAccessor.HttpContext?.User;
+        
+        if (user?.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            logger.LogCritical("{MethodName} called in an unauthenticated request context", nameof(GetCurrentCharacterId));
+            return Result<ulong>.Failure("User is not authenticated.", StatusCodes.Status401Unauthorized);
+        }
+
+        return Result<ulong>.Success(user.GetCharacterId());
     }
 }

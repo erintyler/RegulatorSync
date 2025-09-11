@@ -34,6 +34,8 @@ public sealed class Plugin : IDalamudPlugin
             builder.Services.AddAuthenticationServices();
             builder.Services.AddSignalR();
             builder.Services.AddCommands();
+            builder.Services.AddWindows();
+            builder.Services.AddData();
 
             _host = builder.Build();
 

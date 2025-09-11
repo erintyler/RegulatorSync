@@ -5,6 +5,7 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Events;
+using Regulator.Client.Events.Client.Notifications;
 using Regulator.Client.Services.Utilities.Interfaces;
 
 namespace Regulator.Client.Services.Utilities;
@@ -56,6 +57,16 @@ public class Mediator : IMediator
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error handling event of type {EventType}", typeof(T).Name);
+
+                    if (typeof(T) != typeof(NotificationMessage))
+                    {
+                        var notification = new NotificationMessage(
+                            "Error handling event",
+                            $"An error occurred while handling an event of type {typeof(T).Name}: {ex.Message}",
+                            Dalamud.Interface.ImGuiNotification.NotificationType.Error);
+                        
+                        await PublishAsync(notification, cancellationToken);
+                    }
                 }
             }
         }

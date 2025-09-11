@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
@@ -8,20 +9,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Regulator.Client.Commands;
 using Regulator.Client.Handlers.Client.Glamourer;
+using Regulator.Client.Handlers.Client.Management;
 using Regulator.Client.Handlers.Client.Notifications;
 using Regulator.Client.Handlers.Server.Connection;
 using Regulator.Client.Handlers.Server.Glamourer;
+using Regulator.Client.Handlers.Server.Management;
 using Regulator.Client.Logging;
 using Regulator.Client.Models.Configuration;
 using Regulator.Client.Services.Authentication;
 using Regulator.Client.Services.Authentication.Interfaces;
+using Regulator.Client.Services.Data;
+using Regulator.Client.Services.Data.Interfaces;
 using Regulator.Client.Services.Hubs;
 using Regulator.Client.Services.Interop;
 using Regulator.Client.Services.Interop.Interfaces;
 using Regulator.Client.Services.Providers;
 using Regulator.Client.Services.Providers.Interfaces;
+using Regulator.Client.Services.Ui;
+using Regulator.Client.Services.Ui.Interfaces;
 using Regulator.Client.Services.Utilities;
 using Regulator.Client.Services.Utilities.Interfaces;
+using Regulator.Client.Windows;
 using Regulator.Services.Sync.Shared.Hubs;
 using Regulator.Services.Sync.Shared.Services;
 using Regulator.Services.Sync.Shared.Services.Interfaces;
@@ -53,6 +61,11 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<CustomizationsUpdatedHandler>();
         services.AddHostedService<RequestCustomizationsHandler>();
         services.AddHostedService<NotificationMessageHandler>();
+        services.AddHostedService<AddSyncCodeHandler>();
+        services.AddHostedService<ReceiveSyncRequestHandler>();
+        services.AddHostedService<OnConnectedHandler>();
+        services.AddHostedService<SyncRequestResponseHandler>();
+        services.AddHostedService<SyncRequestFinalizedHandler>();
         
         // Server event handlers
         services.AddHostedService<ClientOnlineHandler>();
@@ -148,7 +161,28 @@ public static class ServiceCollectionExtensions
     {
         services.AddHostedCommand<AddSyncCodeCommand>();
         services.AddHostedCommand<LoginCommand>();
+        services.AddHostedCommand<ShowWindowCommand>();
         
+        return services;
+    }
+
+    public static IServiceCollection AddWindows(this IServiceCollection services)
+    {
+        services.AddSingleton(new WindowSystem("Regulator"));
+        services.AddSingleton<Window, MainWindow>();
+        services.AddSingleton<Window, NewSyncRequestWindow>();
+
+        services.AddSingleton<IWindowService, WindowService>();
+        services.AddHostedService<WindowService>(p => (WindowService)p.GetRequiredService<IWindowService>());
+        
+        return services;
+    }
+
+    public static IServiceCollection AddData(this IServiceCollection services)
+    {
+        services.AddSingleton<IClientDataService, ClientDataService>();
+        services.AddSingleton<ISyncRequestService, SyncRequestService>();
+
         return services;
     }
     

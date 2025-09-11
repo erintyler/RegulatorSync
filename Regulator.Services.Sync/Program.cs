@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Microsoft.AspNetCore.SignalR;
 using Regulator.Data.DynamoDb.Repositories;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
+using Regulator.Data.Redis.Configuration;
 using Regulator.Services.Shared.Configuration;
 using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Services;
@@ -29,6 +30,7 @@ var tokenSettings = new TokenSettings
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddJwtAuthentication(tokenSettings);
+builder.Services.AddRedisDataServices();
 
 builder.Services.AddAWSService<IAmazonDynamoDB>();
 builder.Services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
@@ -41,7 +43,8 @@ builder.Services.AddScoped<IUserCreationService, UserCreationService>();
 builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsResetDto>, NotifyCustomizationsResetHandler>();
 builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsUpdatedDto>, NotifyCustomizationsUpdatedHandler>();
 builder.Services.AddScoped<IRequestHandler<RequestCustomizationsDto>, RequestCustomizationsHandler>();
-builder.Services.AddScoped<IRequestHandler<AddSyncCodeDto>, AddSyncCodeHandler>();
+builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>();
+builder.Services.AddScoped<IRequestHandler<SyncRequestResponseDto>, SyncRequestResponseHandler>();
 builder.Services.AddScoped<IRequestHandlerFactory, RequestHandlerFactory>();
 
 builder.Services.AddSignalR();

@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Regulator.Data.DynamoDb.Repositories.Interfaces;
 using Regulator.Services.Shared.Extensions;
+using Regulator.Services.Shared.Services.Interfaces;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
+using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Services.Sync.Hubs;
 
-public class RegulatorHub(IRequestHandlerFactory requestHandlerFactory, ILogger<RegulatorHub> logger) : Hub<IRegulatorClientMethods>
+[Authorize]
+public class RegulatorHub(IUserContextService userContextService, IRequestHandlerFactory requestHandlerFactory, ILogger<RegulatorHub> logger) : Hub<IRegulatorClientMethods>
 {
-    public override Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
         var user = Context.User?.GetDiscordId() ?? "Unknown";
         
@@ -18,15 +22,30 @@ public class RegulatorHub(IRequestHandlerFactory requestHandlerFactory, ILogger<
         {
             logger.LogWarning("Unauthenticated connection attempt. ConnectionId: {ConnectionId}", Context.ConnectionId);
             Context.Abort();
-            return Task.CompletedTask;
         }
         
         logger.LogInformation("Client connected: Discord ID: {User}. SyncCode: {SyncCode}, ConnectionId: {ConnectionId}", user, Context.UserIdentifier, Context.ConnectionId);
         
-        return base.OnConnectedAsync();
+        var userResult = await userContextService.GetCurrentUserAsync();
+        
+        if (!userResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to retrieve user for Discord ID: {User}. ConnectionId: {ConnectionId}. Error: {ErrorMessage}", user, Context.ConnectionId, userResult.ErrorMessage);
+            Context.Abort();
+            return;
+        }
+        
+        var connectedDto = new ConnectedDto
+        {
+            SyncCode = userResult.Value.SyncCode,
+            AddedSyncCodes = userResult.Value.AddedSyncCodes,
+        };
+        
+        await Clients.Caller.OnConnectedAsync(connectedDto);
+        
+        await base.OnConnectedAsync();
     }
     
-    [Authorize]
     public async Task NotifyCustomizationsUpdatedAsync(NotifyCustomizationsUpdatedDto dto)
     {
         var handler = requestHandlerFactory.GetHandler<NotifyCustomizationsUpdatedDto>();
@@ -35,10 +54,16 @@ public class RegulatorHub(IRequestHandlerFactory requestHandlerFactory, ILogger<
         //await Clients.Others.NotifyCustomizationsUpdatedAsync(dto);
     }
     
-    [Authorize]
-    public async Task AddSyncCodeAsync(AddSyncCodeDto dto)
+    public async Task AddSyncCodeAsync(SyncRequestDto dto)
     {
-        var handler = requestHandlerFactory.GetHandler<AddSyncCodeDto>();
+        var handler = requestHandlerFactory.GetHandler<SyncRequestDto>();
+        
+        await handler.HandleAsync(dto);
+    }
+    
+    public async Task RespondToSyncRequestAsync(SyncRequestResponseDto dto)
+    {
+        var handler = requestHandlerFactory.GetHandler<SyncRequestResponseDto>();
         
         await handler.HandleAsync(dto);
     }

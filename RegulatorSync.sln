@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Sync", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Services.Sync.Shared", "Regulator.Services.Sync.Shared\Regulator.Services.Sync.Shared.csproj", "{92EE8506-3ECE-4121-AB6E-6A45FCC3253A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Client.Mediator", "Regulator.Client.Mediator\Regulator.Client.Mediator.csproj", "{DD50F57F-F932-4E1E-879B-71A5FB818458}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulator.Client", "Regulator.Client\Regulator.Client.csproj", "{EED7474F-DC8E-4138-929A-53C5C164A128}"
 EndProject
 Global
@@ -83,10 +81,6 @@ Global
 		{92EE8506-3ECE-4121-AB6E-6A45FCC3253A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92EE8506-3ECE-4121-AB6E-6A45FCC3253A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92EE8506-3ECE-4121-AB6E-6A45FCC3253A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD50F57F-F932-4E1E-879B-71A5FB818458}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD50F57F-F932-4E1E-879B-71A5FB818458}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD50F57F-F932-4E1E-879B-71A5FB818458}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD50F57F-F932-4E1E-879B-71A5FB818458}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EED7474F-DC8E-4138-929A-53C5C164A128}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{EED7474F-DC8E-4138-929A-53C5C164A128}.Debug|Any CPU.Build.0 = Debug|x64
 		{EED7474F-DC8E-4138-929A-53C5C164A128}.Release|Any CPU.ActiveCfg = Release|x64

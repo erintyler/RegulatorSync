@@ -1,0 +1,66 @@
+﻿{
+  "compatibilities": [
+    "EC2"
+  ],
+  "containerDefinitions": [
+    {
+      "cpu": 0,
+      "environment": [],
+      "environmentFiles": [],
+      "essential": true,
+      "image": "886436922604.dkr.ecr.eu-west-2.amazonaws.com/regulator/auth-service@sha256:0b8c17b6cc2fb8c98a86307beec8b0fd9586cce1e05bef5960df4dbbe4264992",
+      "mountPoints": [],
+      "name": "auth-service",
+      "portMappings": [
+        {
+          "appProtocol": "http",
+          "containerPort": 80,
+          "hostPort": 80,
+          "name": "80",
+          "protocol": "tcp"
+        }
+      ],
+      "systemControls": [],
+      "ulimits": [],
+      "volumesFrom": []
+    }
+  ],
+  "cpu": "512",
+  "enableFaultInjection": false,
+  "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
+  "family": "auth-service",
+  "memory": "512",
+  "networkMode": "awsvpc",
+  "placementConstraints": [],
+  "registeredAt": "2025-09-11T20:49:15.113Z",
+  "registeredBy": "arn:aws:iam::886436922604:root",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "revision": 1,
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "status": "ACTIVE",
+  "taskDefinitionArn": "arn:aws:ecs:eu-west-2:886436922604:task-definition/auth-service:1",
+  "volumes": [],
+  "tags": []
+}

@@ -54,7 +54,7 @@ jobs:
         id: render-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: Regulator.Services.Auth/task-definition.json
+          task-definition: ecs/auth-task-definition.json
           container-name: auth-service
           image: ${{ steps.login-ecr.outputs.registry }}/regulator/auth-service:${{ github.sha }}
       - name: Deploy Amazon ECS task definition

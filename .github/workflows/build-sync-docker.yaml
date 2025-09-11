@@ -1,4 +1,4 @@
-﻿name: Build Auth Service Docker Image
+﻿name: Build Sync Service Docker Image
 
 permissions:
   id-token: write

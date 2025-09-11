@@ -28,7 +28,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
       - name: Build Docker image
         run: |
-          docker build -f Regulator.Services.Auth/Dockerfile -t regulator-services-auth:${{ github.sha }} .
+          docker build -f Regulator.Services.Auth/Dockerfile -t regulator/auth-service:${{ github.sha }} .
       - name: Tag Docker image for ECR
         run: |
           docker tag regulator-services-auth:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/regulator-services-auth:${{ github.sha }}

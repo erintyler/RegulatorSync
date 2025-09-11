@@ -63,16 +63,17 @@ jobs:
           git pull
           $tag = "${{ github.ref_name }}"
           $repo = @{
-            name = "Regulator"
-            description = "Sync your appearance with your friends!"
-            repo_url = "https://github.com/erintyler/RegulatorSync"
-            tags = @("plugin", "regulator")
-            punchline = "Sync your appearance with your friends!"
-            author = "Saxolotl"
-            version = "${{ github.ref_name }}"
-            download_link_install = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
-            download_link_update = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
-            changelog = "See release notes"
+            Name = "Regulator"
+            Description = "Sync your appearance with your friends!"
+            RepoUrl = "https://github.com/erintyler/RegulatorSync"
+            Tags = @("plugin", "regulator")
+            Punchline = "Sync your appearance with your friends!"
+            Author = "Saxolotl"
+            Version = "${{ github.ref_name }}"
+            DownloadLinkInstall = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
+            DownloadLinkUpdate = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
+            InternalName = "Regulator.Client"
+            DalamudApiLevel = 13
           }
           @($repo) | ConvertTo-Json -AsArray -Depth 3 | Set-Content repo.json
           git config --global user.name "github-actions[bot]"

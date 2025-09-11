@@ -1,7 +1,4 @@
 ﻿{
-  "compatibilities": [
-    "EC2"
-  ],
   "containerDefinitions": [
     {
       "cpu": 0,
@@ -26,31 +23,10 @@
     }
   ],
   "cpu": "512",
-  "enableFaultInjection": false,
   "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
   "family": "auth-service",
   "memory": "512",
   "networkMode": "awsvpc",
-  "placementConstraints": [],
-  "registeredAt": "2025-09-11T20:49:15.113Z",
-  "registeredBy": "arn:aws:iam::886436922604:root",
-  "requiresAttributes": [
-    {
-      "name": "com.amazonaws.ecs.capability.ecr-auth"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
-    },
-    {
-      "name": "ecs.capability.execution-role-ecr-pull"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-    },
-    {
-      "name": "ecs.capability.task-eni"
-    }
-  ],
   "requiresCompatibilities": [
     "EC2"
   ],
@@ -59,8 +35,6 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "status": "ACTIVE",
-  "taskDefinitionArn": "arn:aws:ecs:eu-west-2:886436922604:task-definition/auth-service:1",
   "volumes": [],
   "tags": []
 }

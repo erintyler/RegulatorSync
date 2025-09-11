@@ -53,6 +53,8 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapGet("/", () => "Regulator Sync Service is running.");
+
 app.MapHub<RegulatorHub>("/sync");
 
 app.Run();

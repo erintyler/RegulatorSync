@@ -1,0 +1,15 @@
+{
+  "author": "Your Name",
+  "repo_url": "https://github.com/erintyler/your-repo",
+  "description": "Your plugin description",
+  "download_link_install": "https://github.com/erintyler/your-repo/releases/download//Regulator.Client.zip",
+  "download_link_update": "https://github.com/erintyler/your-repo/releases/download//Regulator.Client.zip",
+  "name": "Regulator Plugin",
+  "tags": [
+    "plugin",
+    "regulator"
+  ],
+  "version": "",
+  "changelog": "See release notes",
+  "punchline": "Short summary"
+}

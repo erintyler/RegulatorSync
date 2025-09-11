@@ -1,16 +1,16 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
 
 # Install NativeAOT build prerequisites
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       clang zlib1g-dev
+RUN apk update \
+    && apk add --no-cache \
+       clang zlib-dev
 
 WORKDIR /src
 COPY ["Regulator.Services.Auth/Regulator.Services.Auth.csproj", "Regulator.Services.Auth/"]

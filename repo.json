@@ -1,15 +1,17 @@
-{
-  "download_link_install": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.9/Regulator.Client.zip",
-  "name": "Regulator",
-  "download_link_update": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.9/Regulator.Client.zip",
-  "version": "0.0.9",
-  "tags": [
-    "plugin",
-    "regulator"
-  ],
-  "punchline": "Sync your appearance with your friends!",
-  "changelog": "See release notes",
-  "author": "Saxolotl",
-  "repo_url": "https://github.com/erintyler/RegulatorSync",
-  "description": "Sync your appearance with your friends!"
-}
+[
+  {
+    "description": "Sync your appearance with your friends!",
+    "download_link_update": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.10/Regulator.Client.zip",
+    "tags": [
+      "plugin",
+      "regulator"
+    ],
+    "author": "Saxolotl",
+    "punchline": "Sync your appearance with your friends!",
+    "download_link_install": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.10/Regulator.Client.zip",
+    "version": "0.0.10",
+    "changelog": "See release notes",
+    "repo_url": "https://github.com/erintyler/RegulatorSync",
+    "name": "Regulator"
+  }
+]

@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="regulator.client.yaml" />
+    <Content Include="regulator.yaml" />
   </ItemGroup>
 
   <ItemGroup>

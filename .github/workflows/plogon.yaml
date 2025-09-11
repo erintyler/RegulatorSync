@@ -40,17 +40,21 @@ jobs:
       - name: Build 🔨
         run: dotnet build Regulator.Client/Regulator.Client.csproj --configuration Release --no-restore
         
+      - name: Rename latest.zip to Regulator.Client.zip
+        run: |
+          Rename-Item -Path "Regulator.Client/bin/Release/Regulator.Client/latest.zip" -NewName "Regulator.Client.zip"
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           path: |
-            Regulator.Client/bin/Release/Regulator.Client/latest.zip
+            Regulator.Client/bin/Release/Regulator.Client/Regulator.Client.zip
             
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ github.ref_name }} Regulator.Client/bin/Release/Regulator.Client/latest.zip --title "Regulator Plugin ${{ github.ref_name }}" --generate-notes
+          gh release create ${{ github.ref_name }} Regulator.Client/bin/Release/Regulator.Client/Regulator.Client.zip --title "Regulator Plugin ${{ github.ref_name }}" --generate-notes
           
       - name: Update Dalamud repo.json
         run: |

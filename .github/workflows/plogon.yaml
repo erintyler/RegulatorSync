@@ -64,6 +64,7 @@ jobs:
           $tag = "${{ github.ref_name }}"
           $repo = @{
             Name = "Regulator"
+            InternalName = "Regulator"
             Description = "Sync your appearance with your friends!"
             RepoUrl = "https://github.com/erintyler/RegulatorSync"
             Tags = @("plugin", "regulator")

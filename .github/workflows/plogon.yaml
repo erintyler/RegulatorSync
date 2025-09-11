@@ -73,7 +73,6 @@ jobs:
             Version = "${{ github.ref_name }}"
             DownloadLinkInstall = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
             DownloadLinkUpdate = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
-            InternalName = "Regulator.Client"
             DalamudApiLevel = 13
           }
           @($repo) | ConvertTo-Json -AsArray -Depth 3 | Set-Content repo.json

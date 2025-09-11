@@ -33,7 +33,7 @@ jobs:
       - name: Set regulator.client.yaml version
         run: |
           $tag = "${GITHUB_REF#refs/tags/}"
-          (Get-Content Regulator.Client/regulator.client.yaml) -replace 'version: .*', "version: $tag" | Set-Content Regulator.Client/regulator.client.yaml'
+          (Get-Content Regulator.Client/regulator.client.yaml) -replace 'version: .*', "version: $tag" | Set-Content Regulator.Client/regulator.client.yaml
         
       - name: Build 🔨
         run: dotnet build Regulator.Client/Regulator.Client.csproj --configuration Release --no-restore

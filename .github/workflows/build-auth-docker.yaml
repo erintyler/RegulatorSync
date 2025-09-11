@@ -31,7 +31,7 @@ jobs:
           docker build -f Regulator.Services.Auth/Dockerfile -t regulator/auth-service:${{ github.sha }} .
       - name: Tag Docker image for ECR
         run: |
-          docker tag regulator-services-auth:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/regulator-services-auth:${{ github.sha }}
+          docker tag regulator-services-auth:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/regulator/auth-service:${{ github.sha }}
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/regulator-services-auth:${{ github.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/regulator/auth-service:${{ github.sha }}

@@ -35,6 +35,14 @@ jobs:
       - name: Push Docker image to ECR
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/regulator/auth-service:${{ github.sha }}
+      - name: Save Docker image as tarball
+        run: |
+          docker save -o auth-service-image.tar regulator/auth-service:${{ github.sha }}
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: auth-service-image
+          path: auth-service-image.tar
 
   deploy-ecs:
     runs-on: ubuntu-latest
@@ -63,4 +71,3 @@ jobs:
           task-definition: ${{ steps.render-task-def.outputs.task-definition }}
           service: auth-service
           cluster: regulator-ecs
-          wait-for-service-stability: true

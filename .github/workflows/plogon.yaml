@@ -62,23 +62,23 @@ jobs:
           git checkout main
           git pull
           $tag = "${{ github.ref_name }}"
-          $repo = @(
-            @{
-               name = "Regulator"
-               description = "Sync your appearance with your friends!"
-               repo_url = "https://github.com/erintyler/RegulatorSync"
-               tags = @("plugin", "regulator")
-               punchline = "Sync your appearance with your friends!"
-               author = "Saxolotl"
-               version = "${{ github.ref_name }}"
-              download_link_install = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
-               download_link_update = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
-               changelog = "See release notes"
-            }
-          )
-          $repo | ConvertTo-Json -Depth 3 | Set-Content repo.json
+          $repo = @{
+            name = "Regulator"
+            description = "Sync your appearance with your friends!"
+            repo_url = "https://github.com/erintyler/RegulatorSync"
+            tags = @("plugin", "regulator")
+            punchline = "Sync your appearance with your friends!"
+            author = "Saxolotl"
+            version = "${{ github.ref_name }}"
+            download_link_install = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
+            download_link_update = "https://github.com/erintyler/RegulatorSync/releases/download/$tag/Regulator.Client.zip"
+            changelog = "See release notes"
+          }
+          @($repo) | ConvertTo-Json -AsArray -Depth 3 | Set-Content repo.json
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add repo.json
           git commit -m "Update repo.json for $tag"
           git push origin main
+        shell:
+          pwsh

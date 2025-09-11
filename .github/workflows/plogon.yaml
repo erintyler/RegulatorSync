@@ -60,6 +60,9 @@ jobs:
           
       - name: Update Dalamud repo.json
         run: |
+          git fetch origin main
+          git checkout main
+          git pull
           $tag = "${GITHUB_REF#refs/tags/}"
           $repo = @{
             name = "Regulator Plugin"

@@ -33,9 +33,9 @@ jobs:
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
         
-      - name: Set regulator.client.yaml version
+      - name: Set regulator.yaml version
         run: |
-          (Get-Content Regulator.Client/regulator.client.yaml) -replace 'version: .*', "version: ${{ github.ref_name }}" | Set-Content Regulator.Client/regulator.client.yaml
+          (Get-Content Regulator.Client/regulator.yaml) -replace 'version: .*', "version: ${{ github.ref_name }}" | Set-Content Regulator.Client/regulator.yaml
         
       - name: Build 🔨
         run: dotnet build Regulator.Client/Regulator.Client.csproj --configuration Release --no-restore

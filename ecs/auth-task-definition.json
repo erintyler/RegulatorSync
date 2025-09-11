@@ -19,7 +19,15 @@
       ],
       "systemControls": [],
       "ulimits": [],
-      "volumesFrom": []
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/auth-service",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "auth-service"
+        }
+      }
     }
   ],
   "cpu": "512",

@@ -1,0 +1,78 @@
+﻿name: Build Regulator Plugin
+
+on:
+  push:
+    tags:
+        - '*.*.*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+          cache: 'true'
+          cache-dependency-path: |
+            Regulator.Client/Regulator.Client.csproj
+            Regulator.Services.Sync.Shared/Regulator.Services.Sync.Shared.csproj
+      
+      - name: Restore dependencies
+        run: dotnet restore Regulator.Client/Regulator.Client.csproj
+        
+      - name: Download Dalamud
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
+        
+      - name: Set regulator.client.yaml version
+        run: |
+          $tag = "${GITHUB_REF#refs/tags/}"
+          (Get-Content Regulator.Client/regulator.client.yaml) -replace 'version: .*', "version: $tag" | Set-Content Regulator.Client/regulator.client.yaml'
+        
+      - name: Build 🔨
+        run: dotnet build Regulator.Client/Regulator.Client.csproj --configuration Release --no-restore
+        
+      - name: Archive artifact
+        run: |
+          Compress-Archive -Path Regulator.Client/bin/Release/* -DestinationPath Regulator.Client.zip -Force
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: |
+            Regulator.Client/bin/Release/*
+            
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: "${GITHUB_REF#refs/tags/}"
+        run: |
+          gh release create $tag Regulator.Client.zip --title "Regulator Plugin $tag" --generate-notes
+          
+      - name: Update Dalamud repo.json
+        run: |
+          $tag = "${GITHUB_REF#refs/tags/}"
+          $repo = @{
+            name = "Regulator Plugin"
+            description = "Your plugin description"
+            repo_url = "https://github.com/erintyler/your-repo"
+            tags = @("plugin", "regulator")
+            punchline = "Short summary"
+            author = "Your Name"
+            version = $tag
+            download_link_install = "https://github.com/erintyler/your-repo/releases/download/$tag/Regulator.Client.zip"
+            download_link_update = "https://github.com/erintyler/your-repo/releases/download/$tag/Regulator.Client.zip"
+            changelog = "See release notes"
+          }
+          $repo | ConvertTo-Json -Depth 3 | Set-Content repo.json
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add repo.json
+          git commit -m "Update repo.json for $tag"
+          git push origin main

@@ -34,8 +34,10 @@ jobs:
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
         
       - name: Set regulator.client.yaml version
+        env:
+          GITHUB_TAG: ${{ github.ref_name }}
         run: |
-          $tag = "${GITHUB_REF#refs/tags/}"
+          $tag = "${env:GITHUB_TAG}"
           (Get-Content Regulator.Client/regulator.client.yaml) -replace 'version: .*', "version: $tag" | Set-Content Regulator.Client/regulator.client.yaml
         
       - name: Build 🔨
@@ -54,7 +56,7 @@ jobs:
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: "${GITHUB_REF#refs/tags/}"
+          tag: ${{ github.ref_name }}
         run: |
           gh release create $tag Regulator.Client.zip --title "Regulator Plugin $tag" --generate-notes
           

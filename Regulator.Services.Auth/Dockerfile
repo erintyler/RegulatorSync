@@ -6,6 +6,12 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
+
+# Install NativeAOT build prerequisites
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       clang zlib1g-dev
+
 WORKDIR /src
 COPY ["Regulator.Services.Auth/Regulator.Services.Auth.csproj", "Regulator.Services.Auth/"]
 RUN dotnet restore "Regulator.Services.Auth/Regulator.Services.Auth.csproj"

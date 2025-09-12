@@ -62,7 +62,7 @@
   ],
   "cpu": "512",
   "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
-  "family": "auth-service",
+  "family": "sync-service",
   "memory": "512",
   "networkMode": "bridge",
   "requiresCompatibilities": [

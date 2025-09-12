@@ -123,6 +123,6 @@ public class GlamourerApiClient : IGlamourerApiClient
 
             var customizationsUpdated = new CustomizationsUpdated(customizations);
             await _mediator.PublishAsync(customizationsUpdated);
-        }, 100);
+        });
     }
 }

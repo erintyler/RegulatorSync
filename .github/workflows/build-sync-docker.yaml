@@ -10,6 +10,8 @@ on:
     paths-ignore:
       - 'Regulator.Client/**'
       - 'Regulator.Services.Auth/**'
+      - '.github/workflows/**'
+      - 'ecs/auth-task-definition.json'
   pull_request:
     branches: [ main ]
 

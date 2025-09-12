@@ -11,9 +11,9 @@
       "portMappings": [
         {
           "appProtocol": "http",
-          "containerPort": 5000,
-          "hostPort": 5000,
-          "name": "80",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "name": "8080",
           "protocol": "tcp"
         }
       ],
@@ -37,13 +37,23 @@
           "name": "Authentication__Discord__ClientSecret",
           "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/auth-service/discord/client-secret"
         }
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      }
     }
   ],
-  "cpu": "512",
+  "cpu": "256",
   "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
   "family": "auth-service",
-  "memory": "512",
+  "memory": "256",
   "networkMode": "awsvpc",
   "requiresCompatibilities": [
     "EC2"

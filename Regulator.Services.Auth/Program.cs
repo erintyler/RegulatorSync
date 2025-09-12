@@ -79,6 +79,12 @@ builder.Services.AddAuthentication(o =>
             using var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync(context.HttpContext.RequestAborted));
             context.RunClaimActions(user.RootElement);
         };
+        
+        options.Events.OnRedirectToAuthorizationEndpoint = context =>
+        {
+            context.RedirectUri = context.RedirectUri.Replace("http:", "https:");
+            return Task.CompletedTask;
+        };
     });
 
 builder.Services.AddAuthorization(o =>
@@ -96,6 +102,9 @@ var app = builder.Build();
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add default route to verify service is running
+app.MapGet("/", () => "Neurilink Auth Service.");
 
 app.MapHealthChecks("/health");
 

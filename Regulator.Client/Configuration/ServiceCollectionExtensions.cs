@@ -66,7 +66,6 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<OnConnectedHandler>();
         services.AddHostedService<SyncRequestResponseHandler>();
         services.AddHostedService<SyncRequestFinalizedHandler>();
-        services.AddHostedService<SendOnlineDataHandler>();
         
         // Server event handlers
         services.AddHostedService<ClientOnlineHandler>();

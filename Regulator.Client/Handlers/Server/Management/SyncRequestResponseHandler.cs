@@ -25,9 +25,6 @@ public class SyncRequestResponseHandler(IRegulatorServerMethods client, IMediato
                 NotificationType.Success);
 
             await mediator.PublishAsync(notificationMessage, cancellationToken);
-            
-            var sendOnlineData = new SendOnlineData(eventData.TargetSyncCode, 0);
-            await mediator.PublishAsync(sendOnlineData, cancellationToken);
         }
         else
         {

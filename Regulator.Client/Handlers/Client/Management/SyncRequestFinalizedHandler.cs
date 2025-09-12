@@ -4,6 +4,7 @@ using Dalamud.Interface.ImGuiNotification;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Management;
 using Regulator.Client.Events.Client.Notifications;
+using Regulator.Client.Events.Server.Connection;
 using Regulator.Client.Services.Data.Interfaces;
 using Regulator.Client.Services.Hosting;
 using Regulator.Client.Services.Providers.Interfaces;
@@ -47,6 +48,9 @@ public class SyncRequestFinalizedHandler(
                 NotificationType.Success);
         
             await mediator.PublishAsync(notificationMessage, cancellationToken);
+            
+            var sendOnlineData = new SendOnlineData(eventData.SourceSyncCode, 0);
+            await mediator.PublishAsync(sendOnlineData, cancellationToken);
         }
         else
         {

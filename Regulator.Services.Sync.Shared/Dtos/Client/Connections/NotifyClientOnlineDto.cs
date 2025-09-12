@@ -2,4 +2,5 @@
 
 public class NotifyClientOnlineDto : BaseSyncDto
 {
+    public ulong CharacterId { get; set; }
 }

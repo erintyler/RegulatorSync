@@ -67,4 +67,11 @@ public class RegulatorHub(IUserContextService userContextService, IRequestHandle
         
         await handler.HandleAsync(dto);
     }
+    
+    public async Task SendOnlineDataAsync(SendOnlineDataDto dto)
+    {
+        var handler = requestHandlerFactory.GetHandler<SendOnlineDataDto>();
+        
+        await handler.HandleAsync(dto);
+    }
 }

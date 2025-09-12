@@ -16,7 +16,6 @@ public class ClientOnlineHandler(ICharacterHashProvider characterHashProvider, I
         characterHashProvider.AddOrUpdateHash(eventData.SourceSyncCode, eventData.CharacterHash);
         syncCodeProvider.AddSyncCode(eventData.CharacterHash, eventData.SourceSyncCode);
         
-        // TODO: Publish events to get current state (Glamourer, Penumbra, etc.)
         var requestCustomizations = new RequestCustomizations(eventData.SourceSyncCode);
         await mediator.PublishAsync(requestCustomizations, cancellationToken);
     }

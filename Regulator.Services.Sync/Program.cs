@@ -45,6 +45,7 @@ builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsUpdatedDto>, Noti
 builder.Services.AddScoped<IRequestHandler<RequestCustomizationsDto>, RequestCustomizationsHandler>();
 builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>();
 builder.Services.AddScoped<IRequestHandler<SyncRequestResponseDto>, SyncRequestResponseHandler>();
+builder.Services.AddScoped<IRequestHandler<SendOnlineDataDto>, SendOnlineDataHandler>();
 builder.Services.AddScoped<IRequestHandlerFactory, RequestHandlerFactory>();
 
 builder.Services.AddHealthChecks();

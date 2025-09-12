@@ -13,4 +13,5 @@ public interface IRegulatorClientMethods
     Task OnConnectedAsync(ConnectedDto connectedDto);
     Task OnReceiveSyncRequestAsync(ReceiveSyncRequestDto receiveSyncRequestDto);
     Task OnSyncRequestFinalizedAsync(SyncRequestFinalizedDto syncRequestFinalizedDto);
+    Task OnClientOnlineAsync(NotifyClientOnlineDto notifyClientOnlineDto);
 }

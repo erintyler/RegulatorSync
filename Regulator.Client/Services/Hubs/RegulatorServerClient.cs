@@ -147,6 +147,16 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         await connection.SendAsync(nameof(RespondToSyncRequestAsync), dto);
     }
 
+    public async Task SendOnlineDataAsync(SendOnlineDataDto dto)
+    {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
+        await connection.SendAsync(nameof(SendOnlineDataAsync), dto);
+    }
+
     private void BindEventHandlers()
     {
         accessTokenProvider.AccessTokenChangedAsync += OnAccessTokenChangedAsync;

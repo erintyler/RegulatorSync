@@ -24,6 +24,7 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         connection.On<ConnectedDto>(nameof(OnConnectedAsync), OnConnectedAsync);
         connection.On<ReceiveSyncRequestDto>(nameof(OnReceiveSyncRequestAsync), OnReceiveSyncRequestAsync);
         connection.On<SyncRequestFinalizedDto>(nameof(OnSyncRequestFinalizedAsync), OnSyncRequestFinalizedAsync);
+        connection.On<NotifyClientOnlineDto>(nameof(OnClientOnlineAsync), OnClientOnlineAsync);
         
         return Task.CompletedTask;
     }
@@ -36,6 +37,7 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         connection.Remove(nameof(OnConnectedAsync));
         connection.Remove(nameof(OnReceiveSyncRequestAsync));
         connection.Remove(nameof(OnSyncRequestFinalizedAsync));
+        connection.Remove(nameof(OnClientOnlineAsync));
         
         return Task.CompletedTask;
     }
@@ -76,5 +78,12 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         var syncRequestFinalized = new SyncRequestFinalized(syncRequestFinalizedDto.SourceSyncCode!, syncRequestFinalizedDto.Accepted);
         
         await mediator.PublishAsync(syncRequestFinalized);
+    }
+
+    public async Task OnClientOnlineAsync(NotifyClientOnlineDto notifyClientOnlineDto)
+    {
+        var clientOnline = new ClientOnline(notifyClientOnlineDto.SourceSyncCode!, notifyClientOnlineDto.CharacterId);
+        
+        await mediator.PublishAsync(clientOnline);
     }
 }

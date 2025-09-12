@@ -13,4 +13,5 @@ public interface IRegulatorServerMethods
     Task RequestCustomizationsAsync(RequestCustomizationsDto dto);
     Task AddSyncCodeAsync(SyncRequestDto dto);
     Task RespondToSyncRequestAsync(SyncRequestResponseDto dto);
+    Task SendOnlineDataAsync(SendOnlineDataDto dto);
 }

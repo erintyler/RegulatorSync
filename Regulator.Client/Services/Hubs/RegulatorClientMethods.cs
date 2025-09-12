@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Management;
 using Regulator.Client.Events.Server.Connection;
 using Regulator.Client.Events.Server.Glamourer;
+using Regulator.Client.Models;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client;
 using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
@@ -61,7 +63,11 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
 
     public async Task OnConnectedAsync(ConnectedDto connectedDto)
     {
-        var onConnected = new OnConnected(connectedDto.SyncCode, connectedDto.AddedSyncCodes);
+        var onlineUsers = connectedDto.OnlineUsers
+            .Select(u => new OnlineUser(u.SyncCode, u.CharacterId))
+            .ToList();
+        
+        var onConnected = new OnConnected(connectedDto.SyncCode, connectedDto.AddedSyncCodes, onlineUsers);
         
         await mediator.PublishAsync(onConnected);
     }

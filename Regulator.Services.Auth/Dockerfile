@@ -6,11 +6,6 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
 
-# Install NativeAOT build prerequisites
-RUN apk update \
-    && apk add --no-cache \
-       clang zlib-dev
-
 WORKDIR /src
 COPY ["Regulator.Services.Auth/Regulator.Services.Auth.csproj", "Regulator.Services.Auth/"]
 RUN dotnet restore "Regulator.Services.Auth/Regulator.Services.Auth.csproj"
@@ -27,4 +22,4 @@ RUN apk add --no-cache curl
 USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["/app/Regulator.Services.Auth"]
+ENTRYPOINT ["dotnet", "Regulator.Services.Auth.dll"]

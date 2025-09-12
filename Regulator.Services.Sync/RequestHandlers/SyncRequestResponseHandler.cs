@@ -5,7 +5,9 @@ using Regulator.Data.Redis.Services.Interfaces;
 using Regulator.Services.Shared.Services.Interfaces;
 using Regulator.Services.Sync.Hubs;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
+using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client;
+using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Hubs;
 
@@ -14,7 +16,8 @@ namespace Regulator.Services.Sync.RequestHandlers;
 public class SyncRequestResponseHandler(
     IUserContextService userContextService, 
     IUserRepository userRepository,
-    ISyncRequestRepository syncRequestRepository, 
+    ISyncRequestRepository syncRequestRepository,
+    IOnlineUserService onlineUserService,
     IHubContext<RegulatorHub, IRegulatorClientMethods> context, 
     ILogger<SyncRequestResponseDto> logger) : IRequestHandler<SyncRequestResponseDto>
 {
@@ -74,6 +77,26 @@ public class SyncRequestResponseHandler(
         logger.LogInformation("Notifying sync code {TargetSyncCode} of sync request ID {RequestId} finalization by sync code {SourceSyncCode}. Accepted: {Accepted}", dto.TargetSyncCode, dto.RequestId, user.SyncCode, dto.Accepted);
         
         await context.Clients.User(dto.TargetSyncCode).OnSyncRequestFinalizedAsync(finalizedDto);
+        
+        // Refire OnConnected to update client state with newly added sync codes
+        var onConnectedDto = new ConnectedDto
+        {
+            SyncCode = user.SyncCode,
+            AddedSyncCodes = user.AddedSyncCodes,
+            OnlineUsers = await onlineUserService.GetOnlineSyncedUsersAsync()
+        };
+        
+        await context.Clients.User(user.SyncCode).OnConnectedAsync(onConnectedDto);
+        
+        // Also refire OnConnected for the target user to update their state
+        var targetOnConnectedDto = new ConnectedDto 
+        {
+            SyncCode = targetUser.SyncCode,
+            AddedSyncCodes = targetUser.AddedSyncCodes,
+            OnlineUsers = onlineUserService.GetOnlineSyncedUsers(targetUser)
+        };
+        
+        await context.Clients.User(targetUser.SyncCode).OnConnectedAsync(targetOnConnectedDto);
     }
 
     private async Task<User> GetTargetUserAsync(SyncRequestResponseDto dto, CancellationToken cancellationToken)

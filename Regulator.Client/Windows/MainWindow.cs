@@ -5,6 +5,7 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Management;
+using Regulator.Client.Services.Authentication.Interfaces;
 using Regulator.Client.Services.Data.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Enums;
@@ -16,18 +17,20 @@ public class MainWindow : Window, IDisposable
 {
     private readonly IMediator _mediator;
     private readonly ILogger<MainWindow> _logger;
+    private readonly IAuthenticationService _authenticationService;
     private readonly IRegulatorServerMethods _client;
     private readonly IClientDataService _clientDataService;
     
     private string _syncCode = string.Empty;
     private bool _showAddSyncCodePopup;
     
-    public MainWindow(IMediator mediator, ILogger<MainWindow> logger, IRegulatorServerMethods client, IClientDataService clientDataService) : base("Regulator", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+    public MainWindow(IMediator mediator, ILogger<MainWindow> logger, IRegulatorServerMethods client, IClientDataService clientDataService, IAuthenticationService authenticationService) : base("Regulator", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         _mediator = mediator;
         _logger = logger;
         _client = client;
         _clientDataService = clientDataService;
+        _authenticationService = authenticationService;
 
         SizeConstraints = new WindowSizeConstraints
         {
@@ -56,6 +59,17 @@ public class MainWindow : Window, IDisposable
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+        
+        // Add login button if disconnected
+        if (_client.ConnectionState == ConnectionState.Disconnected) 
+        {
+            if (ImGui.Button("Connect"))
+            {
+                _authenticationService.OpenOAuthLoginPage();
+            }
+            
+            return; // Skip the rest of the UI if not connected
         }
         
         ImGui.Separator();
@@ -99,11 +113,18 @@ public class MainWindow : Window, IDisposable
         
         ImGui.Separator();
         ImGui.Text("Added Sync Codes:");
-        if (clientData?.AddedSyncCodes is { Count: > 0 })
+        if (clientData?.AddedUsers is { Count: > 0 })
         {
-            foreach (var code in clientData.AddedSyncCodes)
+            foreach (var user in clientData.AddedUsers)
             {
-                ImGui.BulletText(code);
+                if (user.IsOnline) 
+                {
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"- {user.SyncCode} (Online)");
+                }
+                else
+                {
+                    ImGui.TextColored(ImGuiColors.DalamudRed, $"- {user.SyncCode} (Offline)");
+                }
             }
         }
         else

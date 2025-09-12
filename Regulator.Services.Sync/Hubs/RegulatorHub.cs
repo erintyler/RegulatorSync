@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Regulator.Data.DynamoDb.Repositories.Interfaces;
 using Regulator.Services.Shared.Extensions;
 using Regulator.Services.Shared.Services.Interfaces;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
+using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
@@ -12,7 +12,11 @@ using Regulator.Services.Sync.Shared.Hubs;
 namespace Regulator.Services.Sync.Hubs;
 
 [Authorize]
-public class RegulatorHub(IUserContextService userContextService, IRequestHandlerFactory requestHandlerFactory, ILogger<RegulatorHub> logger) : Hub<IRegulatorClientMethods>
+public class RegulatorHub(
+    IOnlineUserService onlineUserService,
+    IUserContextService userContextService, 
+    IRequestHandlerFactory requestHandlerFactory, 
+    ILogger<RegulatorHub> logger) : Hub<IRegulatorClientMethods>
 {
     public override async Task OnConnectedAsync()
     {
@@ -35,23 +39,51 @@ public class RegulatorHub(IUserContextService userContextService, IRequestHandle
             return;
         }
         
+        var characterIdResult = userContextService.GetCurrentCharacterId();
+        
+        if (!characterIdResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to retrieve character ID for Discord ID: {User}. ConnectionId: {ConnectionId}. Error: {ErrorMessage}", user, Context.ConnectionId, characterIdResult.ErrorMessage);
+            Context.Abort();
+            return;
+        }
+
+        await onlineUserService.SetUserOnlineAsync();
+        var onlineSyncedUsers = await onlineUserService.GetOnlineSyncedUsersAsync();
+        
         var connectedDto = new ConnectedDto
         {
             SyncCode = userResult.Value.SyncCode,
             AddedSyncCodes = userResult.Value.AddedSyncCodes,
+            OnlineUsers = onlineSyncedUsers
         };
         
         await Clients.Caller.OnConnectedAsync(connectedDto);
         
+        var notifyClientOnlineDto = new NotifyClientOnlineDto
+        {
+            SourceSyncCode = userResult.Value.SyncCode,
+            CharacterId = characterIdResult.Value
+        };
+        
+        await Clients.Users(userResult.Value.AddedSyncCodes).OnClientOnlineAsync(notifyClientOnlineDto);
+        
         await base.OnConnectedAsync();
     }
-    
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        await onlineUserService.SetUserOfflineAsync();
+        logger.LogInformation("Client disconnected: Discord ID: {User}", Context.UserIdentifier);
+        
+        await base.OnDisconnectedAsync(exception);
+    }
+
     public async Task NotifyCustomizationsUpdatedAsync(NotifyCustomizationsUpdatedDto dto)
     {
         var handler = requestHandlerFactory.GetHandler<NotifyCustomizationsUpdatedDto>();
         
         await handler.HandleAsync(dto);
-        //await Clients.Others.NotifyCustomizationsUpdatedAsync(dto);
     }
     
     public async Task AddSyncCodeAsync(SyncRequestDto dto)

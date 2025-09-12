@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.SignalR;
 using Regulator.Data.DynamoDb.Repositories;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
 using Regulator.Data.Redis.Configuration;
+using Regulator.Data.Redis.Services;
+using Regulator.Data.Redis.Services.Interfaces;
 using Regulator.Services.Shared.Configuration;
 using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Services;
@@ -13,6 +15,7 @@ using Regulator.Services.Sync.RequestHandlers;
 using Regulator.Services.Sync.RequestHandlers.Glamourer;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
 using Regulator.Services.Sync.Services;
+using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
 
@@ -37,8 +40,10 @@ builder.Services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
 
 builder.Services.AddSingleton<IUserIdProvider, SyncCodeIdProvider>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IOnlineUserRepository, OnlineUserRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserCreationService, UserCreationService>();
+builder.Services.AddScoped<IOnlineUserService, OnlineUserService>();
 
 builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsResetDto>, NotifyCustomizationsResetHandler>();
 builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsUpdatedDto>, NotifyCustomizationsUpdatedHandler>();

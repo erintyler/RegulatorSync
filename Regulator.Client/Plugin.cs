@@ -60,6 +60,6 @@ public sealed class Plugin : IDalamudPlugin
     public void Dispose()
     {
         _host?.StopAsync().GetAwaiter().GetResult();
-        
+        _host?.Dispose();
     }
 }

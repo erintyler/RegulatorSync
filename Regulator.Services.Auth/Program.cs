@@ -83,9 +83,13 @@ builder.Services.AddAuthorization(o =>
     });
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/health");
 
 var authApi = app.MapGroup("/auth").WithTags("Authentication");
 authApi.MapTokenEndpoints();

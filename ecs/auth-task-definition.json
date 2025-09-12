@@ -1,7 +1,6 @@
 ﻿{
   "containerDefinitions": [
     {
-      "cpu": 0,
       "environmentFiles": [],
       "essential": true,
       "image": "886436922604.dkr.ecr.eu-west-2.amazonaws.com/regulator/auth-service@sha256:0b8c17b6cc2fb8c98a86307beec8b0fd9586cce1e05bef5960df4dbbe4264992",
@@ -11,7 +10,7 @@
         {
           "appProtocol": "http",
           "containerPort": 8080,
-          "hostPort": 8080,
+          "hostPort": 0,
           "name": "8080",
           "protocol": "tcp"
         }
@@ -53,7 +52,7 @@
   "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
   "family": "auth-service",
   "memory": "256",
-  "networkMode": "awsvpc",
+  "networkMode": "bridge",
   "requiresCompatibilities": [
     "EC2"
   ],

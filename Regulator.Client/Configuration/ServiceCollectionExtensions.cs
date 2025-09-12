@@ -125,7 +125,11 @@ public static class ServiceCollectionExtensions
         services.AddOptions<AuthenticationSettings>()
             .Configure(o =>
             {
+#if DEBUG                
                 o.OAuthUrl = "http://localhost:5296/auth/token";
+#else
+                o.OAuthUrl = "https://auth.neurilink.app/auth/token";
+#endif
             });
         
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
@@ -136,9 +140,15 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddSignalR(this IServiceCollection services)
-    {
+    { 
+#if DEBUG
+        const string hubUrl = "http://localhost:5016/sync";
+#else
+        const string hubUrl = "https://sync.neurilink.app/sync";
+#endif
+        
         services.AddSingleton<HubConnection>(p => new HubConnectionBuilder()
-            .WithUrl("http://localhost:5016/sync", options =>
+            .WithUrl(hubUrl, options =>
             {
                 options.AccessTokenProvider = () =>
                 {

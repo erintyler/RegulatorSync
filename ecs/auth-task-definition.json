@@ -11,7 +11,7 @@
       "portMappings": [
         {
           "appProtocol": "http",
-          "containerPort": 80,
+          "containerPort": 8080,
           "hostPort": 80,
           "name": "80",
           "protocol": "tcp"
@@ -27,7 +27,17 @@
           "awslogs-region": "eu-west-2",
           "awslogs-stream-prefix": "auth-service"
         }
-      }
+      },
+      "secrets": [
+        {
+          "name": "Authentication__Discord__ClientId",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/auth-service/discord/client-id"
+        },
+        {
+          "name": "Authentication__Discord__ClientSecret",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/auth-service/discord/client-secret"
+        }
+      ]
     }
   ],
   "cpu": "512",

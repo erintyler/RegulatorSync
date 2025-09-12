@@ -47,6 +47,7 @@ builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>(
 builder.Services.AddScoped<IRequestHandler<SyncRequestResponseDto>, SyncRequestResponseHandler>();
 builder.Services.AddScoped<IRequestHandlerFactory, RequestHandlerFactory>();
 
+builder.Services.AddHealthChecks();
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -54,6 +55,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => "Regulator Sync Service is running.");
+
+app.MapHealthChecks("/health");
 
 app.MapHub<RegulatorHub>("/sync");
 

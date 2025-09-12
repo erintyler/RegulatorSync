@@ -71,3 +71,5 @@ jobs:
           task-definition: ${{ steps.render-task-def.outputs.task-definition }}
           service: auth-service
           cluster: neurilink-ecs
+          wait-for-service-stability: true
+          wait-for-minutes: 5

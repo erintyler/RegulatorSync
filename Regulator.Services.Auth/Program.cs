@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.HttpOverrides;
 using Regulator.Data.DynamoDb.Repositories;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
 using Regulator.Services.Auth.Dtos.Requests;
@@ -28,6 +29,11 @@ builder.Host.UseSerilog();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+});
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -79,12 +85,6 @@ builder.Services.AddAuthentication(o =>
             using var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync(context.HttpContext.RequestAborted));
             context.RunClaimActions(user.RootElement);
         };
-        
-        options.Events.OnRedirectToAuthorizationEndpoint = context =>
-        {
-            context.RedirectUri = context.RedirectUri.Replace("http:", "https:");
-            return Task.CompletedTask;
-        };
     });
 
 builder.Services.AddAuthorization(o =>
@@ -99,6 +99,7 @@ builder.Services.AddAuthorization(o =>
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();

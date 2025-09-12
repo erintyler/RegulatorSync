@@ -114,10 +114,10 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
         
             foreach (var obj in _objectTable.CharacterManagerObjects.Where(o => o.ObjectKind is ObjectKind.Player))
             {
-                if (_unsyncedObjectIds.Contains(obj.EntityId))
-                {
-                    continue;
-                }
+                //if (_unsyncedObjectIds.Contains(obj.EntityId))
+                //{
+                //    continue;
+                //}
                 
                 var cachedHash = _objectIdToHash.GetValueOrDefault(obj.EntityId);
 
@@ -142,7 +142,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
 
                 if (string.IsNullOrWhiteSpace(_syncCodeProvider.GetSyncCodeByHash(hash)))
                 {
-                    _unsyncedObjectIds.Add(obj.EntityId);
+                    //_unsyncedObjectIds.Add(obj.EntityId);
                     continue;
                 }
 
@@ -150,7 +150,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
             
                 _visiblePlayersByHash.TryAdd(hash, player);
                 _objectIdToHash.TryAdd(obj.EntityId, hash);
-                _unsyncedObjectIds.Remove(obj.EntityId);
+                //_unsyncedObjectIds.Remove(obj.EntityId);
                 seenHashes.Add(hash);
                 
                 _logger.Info("Added visible player: {Name} ({World})", name, world);

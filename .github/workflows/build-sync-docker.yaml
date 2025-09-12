@@ -7,6 +7,9 @@ permissions:
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'Regulator.Client/**'
+      - 'Regulator.Services.Auth/**'
   pull_request:
     branches: [ main ]
 

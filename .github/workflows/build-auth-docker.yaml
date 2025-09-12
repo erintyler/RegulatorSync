@@ -7,8 +7,16 @@ permissions:
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'Regulator.Client/**'
+      - 'Regulator.Services.Sync/**'
+      - 'Regulator.Services.Sync.Shared/**'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'Regulator.Client/**'
+      - 'Regulator.Services.Sync/**'
+      - 'Regulator.Services.Sync.Shared/**'
 
 jobs:
   build-docker:

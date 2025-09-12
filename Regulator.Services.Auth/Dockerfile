@@ -25,5 +25,6 @@ RUN dotnet publish "./Regulator.Services.Auth.csproj" -c $BUILD_CONFIGURATION -o
 
 FROM base AS final
 WORKDIR /app
+RUN apk add --no-cache curl
 COPY --from=publish /app/publish .
 ENTRYPOINT ["/app/Regulator.Services.Auth"]

@@ -70,4 +70,4 @@ jobs:
         with:
           task-definition: ${{ steps.render-task-def.outputs.task-definition }}
           service: auth-service
-          cluster: regulator-ecs
+          cluster: neurilink-ecs

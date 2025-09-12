@@ -99,26 +99,51 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
 
     public async Task NotifyCustomizationsResetAsync(CustomizationsResetDto dto)
     {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
         await connection.SendAsync(nameof(NotifyCustomizationsResetAsync), dto);
     }
 
     public async Task NotifyCustomizationsUpdatedAsync(NotifyCustomizationsUpdatedDto dto)
     {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
         await connection.SendAsync(nameof(NotifyCustomizationsUpdatedAsync), dto);
     }
 
     public async Task RequestCustomizationsAsync(RequestCustomizationsDto dto)
     {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
         await connection.SendAsync(nameof(RequestCustomizationsAsync), dto);
     }
 
     public async Task AddSyncCodeAsync(SyncRequestDto dto)
     {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
         await connection.SendAsync(nameof(AddSyncCodeAsync), dto);
     }
 
     public async Task RespondToSyncRequestAsync(SyncRequestResponseDto dto)
     {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
         await connection.SendAsync(nameof(RespondToSyncRequestAsync), dto);
     }
 

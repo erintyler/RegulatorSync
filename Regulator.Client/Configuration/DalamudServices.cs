@@ -31,4 +31,7 @@ public class DalamudServices
     
     [PluginService]
     public INotificationManager NotificationManager { get; set; } = null!;
+    
+    [PluginService]
+    public ICondition Condition { get; set; } = null!;
 }

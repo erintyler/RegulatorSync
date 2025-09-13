@@ -18,6 +18,13 @@ public class CallbackService(IAccessTokenProvider accessTokenProvider, IMediator
     
     public void StartCallbackListener()
     {
+        if (_listener is { IsListening: true })
+        {
+            // Kill existing listener if already running
+            _listener.Stop();
+            _cts?.Cancel();
+        }
+        
         _listener = new HttpListener();
         _listener.Prefixes.Add(CallbackUrl);
         _listener.Start();

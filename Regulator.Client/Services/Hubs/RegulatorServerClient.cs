@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface.ImGuiNotification;
+using Dalamud.Plugin.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,12 @@ using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Services.Hubs;
 
-public class RegulatorServerClient(HubConnection connection, IAccessTokenProvider accessTokenProvider, IMediator mediator, ILogger<RegulatorServerClient> logger) : IRegulatorServerMethods, IHostedService, IDisposable
+public class RegulatorServerClient(
+    HubConnection connection, 
+    IAccessTokenProvider accessTokenProvider, 
+    IClientState clientState,
+    IMediator mediator, 
+    ILogger<RegulatorServerClient> logger) : IRegulatorServerMethods, IHostedService, IDisposable
 {
     public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
     
@@ -24,6 +30,14 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
     {
         try 
         {
+            clientState.Login += ClientStateOnLogin;
+            clientState.Logout += ClientStateOnLogout;
+            
+            if (!clientState.IsLoggedIn)
+            {
+                return;
+            }
+            
             BindEventHandlers();
 
             var accessToken = accessTokenProvider.GetAccessToken();
@@ -203,11 +217,25 @@ public class RegulatorServerClient(HubConnection connection, IAccessTokenProvide
         var notification = new NotificationMessage("Failed to connect to Regulator server", ex.Message, Type: NotificationType.Error);
         await mediator.PublishAsync(notification, cancellationToken);
     }
+    
+    private void ClientStateOnLogin()
+    {
+        OnAccessTokenChangedAsync().GetAwaiter().GetResult();
+    }
+    
+    private void ClientStateOnLogout(int type, int code)
+    {
+        connection.StopAsync().GetAwaiter().GetResult();
+        ConnectionState = ConnectionState.Disconnected;
+    }
 
     public void Dispose()
     {
         connection.DisposeAsync().AsTask().GetAwaiter().GetResult();
         accessTokenProvider.AccessTokenChangedAsync -= OnAccessTokenChangedAsync;
+        
+        clientState.Login -= ClientStateOnLogin;
+        clientState.Logout -= ClientStateOnLogout;
         
         GC.SuppressFinalize(this);
     }

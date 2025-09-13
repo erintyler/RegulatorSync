@@ -116,6 +116,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IObjectTable>(_ => dalamudServices.ObjectTable);
         services.AddSingleton<ICommandManager>(_ => dalamudServices.CommandManager);
         services.AddSingleton<INotificationManager>(_ => dalamudServices.NotificationManager);
+        services.AddSingleton<ICondition>(_ => dalamudServices.Condition);
+        services.AddSingleton(_ => pluginInterface.GetPluginConfig() as PluginConfig ?? new PluginConfig());
         
         return services;
     }

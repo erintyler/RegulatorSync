@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Glamourer.Api.Enums;
@@ -18,6 +19,7 @@ namespace Regulator.Client.Services.Interop;
 public class GlamourerApiClient : IGlamourerApiClient
 {
     private readonly IClientState _clientState;
+    private readonly ICondition _condition;
     private readonly IThreadService _threadService;
     private readonly IDebounceService _debounceService;
     private readonly IDependencyMonitoringService _dependencyMonitoringService;
@@ -34,6 +36,7 @@ public class GlamourerApiClient : IGlamourerApiClient
     
     public GlamourerApiClient(
         IClientState clientState, 
+        ICondition condition,
         IDalamudPluginInterface pluginInterface, 
         IThreadService threadService, 
         IDebounceService debounceService,
@@ -43,6 +46,7 @@ public class GlamourerApiClient : IGlamourerApiClient
         IPlayerProvider playerProvider)
     {
         _clientState = clientState;
+        _condition = condition;
         _threadService = threadService;
         _debounceService = debounceService;
         _dependencyMonitoringService = dependencyMonitoringService;
@@ -109,6 +113,12 @@ public class GlamourerApiClient : IGlamourerApiClient
 
     private void OnStateChanged(IntPtr characterPtr, StateChangeType type)
     {
+        if (!_clientState.IsLoggedIn || _condition[ConditionFlag.BetweenAreas])
+        {
+            _logger.LogDebug("State change event received while not logged in or between areas, ignoring.");
+            return;
+        }
+        
         var localPlayerPtr = _clientState.LocalPlayer?.Address ?? IntPtr.Zero;
         if (characterPtr != localPlayerPtr)
         {

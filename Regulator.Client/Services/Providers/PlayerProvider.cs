@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -22,6 +23,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     private readonly HashSet<uint> _unsyncedObjectIds = [];
     
     private readonly ICharacterHashProvider _hashProvider;
+    private readonly IClientState _clientState;
+    private readonly ICondition _condition;
     private readonly IFramework _framework;
     private readonly IObjectTable _objectTable;
     private readonly IHashService _hashService;
@@ -29,6 +32,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     private readonly IPluginLog _logger;
 
     public PlayerProvider(ICharacterHashProvider hashProvider,
+        IClientState clientState,
+        ICondition condition,
         IFramework framework,
         IObjectTable objectTable, 
         IHashService hashService, 
@@ -36,6 +41,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
         IPluginLog logger)
     {
         _hashProvider = hashProvider;
+        _clientState = clientState;
+        _condition = condition;
         _framework = framework;
         _objectTable = objectTable;
         _hashService = hashService;
@@ -110,6 +117,11 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     {
         try
         {
+            if (!_clientState.IsLoggedIn || _condition[ConditionFlag.BetweenAreas])
+            {
+                return;
+            }
+            
             var seenHashes = new HashSet<ulong>();
         
             foreach (var obj in _objectTable.CharacterManagerObjects.Where(o => o.ObjectKind is ObjectKind.Player))

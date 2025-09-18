@@ -46,6 +46,22 @@
         {
           "name": "TokenSettings__Secret",
           "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/shared/token/secret"
+        },
+        {
+          "name": "FileStoreSettings__AccessKey",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/files-service/cloudflare/r2/accesskey"
+        },        
+        {
+          "name": "FileStoreSettings__BucketName",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/files-service/cloudflare/r2/bucketname"
+        },
+        {
+          "name": "FileStoreSettings__SecretKey",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/files-service/cloudflare/r2/secretkey"
+        },
+        {
+          "name": "S3__ServiceUrl",
+          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/files-service/cloudflare/r2/url"
         }
       ],
       "healthCheck": {

@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.Runtime;
 using Amazon.S3;
-using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
 using Regulator.Data.DynamoDb.Repositories;
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
@@ -47,7 +47,12 @@ awsOptions.DefaultClientConfig.ServiceSpecificSettings.Add("ForcePathStyle", "tr
 builder.Services.AddDefaultAWSOptions(awsOptions);
 
 builder.Services.AddAWSService<IAmazonDynamoDB>();
-builder.Services.AddAWSService<IAmazonS3>();
+
+var fileStoreSettings = builder.Configuration.GetSection(nameof(FileStoreSettings)).Get<FileStoreSettings>() ?? throw new InvalidOperationException("FileStoreSettings section is not configured.");
+var s3Options = builder.Configuration.GetAWSOptions("S3");
+s3Options.Credentials = new BasicAWSCredentials(fileStoreSettings.AccessKey, fileStoreSettings.SecretKey);
+
+builder.Services.AddAWSService<IAmazonS3>(s3Options);
 builder.Services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
 builder.Services.AddSingleton<IFileStore, S3FileStore>();
 builder.Services.AddScoped<IFileService, FileService>();

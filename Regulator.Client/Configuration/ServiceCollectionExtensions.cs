@@ -199,6 +199,12 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddData(this IServiceCollection services)
     {
+#if DEBUG
+        const string filesUrl = "http://localhost:5221/";
+#else
+        const string filesUrl = "https://files.neurilink.app/";
+#endif
+        
         services.AddSingleton<IClientDataService, ClientDataService>();
         services.AddSingleton<ISyncRequestService, SyncRequestService>();
         services.AddSingleton<ICompressionService, CompressionService>();

@@ -216,7 +216,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<AuthHeaderHandler>();
 
         services.AddRefitClient<IFileApi>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5221"))
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(filesUrl))
             .AddHttpMessageHandler<AuthHeaderHandler>();
 
         return services;

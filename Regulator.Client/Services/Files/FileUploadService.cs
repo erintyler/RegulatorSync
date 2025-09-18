@@ -9,13 +9,20 @@ using Refit;
 using Regulator.Client.Services.ApiClients;
 using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Services.Files.Shared.Dtos.Requests;
+using Regulator.Services.Sync.Shared.Enums;
+using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Services.Files;
 
-public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientFactory, ILogger<FileUploadService> logger) : IFileUploadService
+public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientFactory, IRegulatorServerMethods client, ILogger<FileUploadService> logger) : IFileUploadService
 {
     public async Task UploadFileAsync(string compressedFilePath, string uncompressedHash, string originalFileExtension, CancellationToken cancellationToken = default)
     {
+        if (client.ConnectionState is not ConnectionState.Connected)
+        {
+            return;
+        }
+        
         // Get file size
         var fileInfo = new FileInfo(compressedFilePath);
         if (!fileInfo.Exists)

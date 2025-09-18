@@ -11,6 +11,7 @@ using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
 using Regulator.Client.Events.Client.Files;
+using Regulator.Client.Models;
 using Regulator.Client.Models.Penumbra;
 using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Interop.Interfaces;
@@ -52,6 +53,13 @@ public class PenumbraApiClient : IPenumbraApiClient
         _addTemporaryMod = new AddTemporaryMod(pluginInterface);
         _gameObjectResourcePathResolved = GameObjectResourcePathResolved.Subscriber(pluginInterface, OnGameObjectResourcePathResolved);
         _assignTemporaryCollection = new AssignTemporaryCollection(pluginInterface);
+        
+        _playerProvider.OnPlayerSeen += OnPlayerSeen;
+    }
+
+    private void OnPlayerSeen(Player player)
+    {
+        AssignTemporaryCollection(player.SyncCode);
     }
 
     // TODO: Add actual comment. (This is for transient resources like emotes)
@@ -181,7 +189,7 @@ public class PenumbraApiClient : IPenumbraApiClient
         }
     }
 
-    public async Task AssignTemporaryCollection(string syncCode)
+    public void AssignTemporaryCollection(string syncCode)
     {
         var player = _playerProvider.GetCachedPlayerBySyncCode(syncCode);
         
@@ -214,6 +222,7 @@ public class PenumbraApiClient : IPenumbraApiClient
     public void Dispose()
     {
         _gameObjectResourcePathResolved.Dispose();
+        _playerProvider.OnPlayerSeen -= OnPlayerSeen;
         
         GC.SuppressFinalize(this);
     }

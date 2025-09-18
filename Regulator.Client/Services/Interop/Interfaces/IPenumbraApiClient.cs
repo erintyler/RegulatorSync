@@ -11,5 +11,5 @@ public interface IPenumbraApiClient : IDisposable
     Task<Guid> CreateTemporaryCollection(string syncCode);
     Task AddTemporaryMod(string syncCode, FileReplacement fileReplacement);
     Task AddTemporaryMods(string syncCode, IEnumerable<FileReplacement> fileReplacements);
-    Task AssignTemporaryCollection(string syncCode);
+    void AssignTemporaryCollection(string syncCode);
 }

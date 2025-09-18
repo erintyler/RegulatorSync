@@ -76,7 +76,7 @@ public class MainWindow : Window, IDisposable
         {
             _logger.LogInformation("Fetching Penumbra resource paths for local player (download test).");
             _penumbraApiClient.GetCustomResourcePathsAsync(true).GetAwaiter().GetResult();
-            _penumbraApiClient.AssignTemporaryCollection("test").GetAwaiter().GetResult();
+            //_penumbraApiClient.AssignTemporaryCollection("test").GetAwaiter().GetResult();
         }
         
         // Add login button if disconnected

@@ -31,6 +31,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     private readonly ISyncCodeProvider _syncCodeProvider;
     private readonly IPluginLog _logger;
 
+    public event Action<Player>? OnPlayerSeen;
+    
     public PlayerProvider(ICharacterHashProvider hashProvider,
         IClientState clientState,
         ICondition condition,
@@ -93,7 +95,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
                 if (computedHash == hash)
                 {
                     _logger.Info("Found player by hash: {Name} ({World})", name, world);
-                    player = new Player(obj.EntityId, name, world, obj.Address, obj.ObjectIndex);
+                    player = new Player(obj.EntityId, name, world, obj.Address, obj.ObjectIndex, syncCode);
                     _pendingPlayersBySyncCode.TryAdd(syncCode, player);
                     
                     return player;
@@ -116,6 +118,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
         
         return player;
     }
+
+    public Action<Player>? OnPlayerAdded { get; set; }
 
     public unsafe void UpdateVisiblePlayers(IFramework framework)
     {
@@ -156,13 +160,14 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(_syncCodeProvider.GetSyncCodeByHash(hash)))
+                var syncCode = _syncCodeProvider.GetSyncCodeByHash(hash);
+                if (string.IsNullOrWhiteSpace(syncCode))
                 {
                     //_unsyncedObjectIds.Add(obj.EntityId);
                     continue;
                 }
 
-                var player = new Player(obj.EntityId, name, world, obj.Address, obj.ObjectIndex);
+                var player = new Player(obj.EntityId, name, world, obj.Address, obj.ObjectIndex, syncCode);
             
                 _visiblePlayersByHash.TryAdd(hash, player);
                 _objectIdToHash.TryAdd(obj.EntityId, hash);
@@ -170,6 +175,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
                 seenHashes.Add(hash);
                 
                 _logger.Info("Added visible player: {Name} ({World})", name, world);
+
+                OnPlayerSeen?.Invoke(player);
             }
         
             var toRemove = _visiblePlayersByHash.Keys.Except(seenHashes).ToList();

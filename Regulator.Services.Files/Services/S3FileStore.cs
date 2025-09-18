@@ -17,6 +17,7 @@ public async Task<string> GetPresignedUploadUrlAsync(string uncompressedHash, in
         Verb = HttpVerb.PUT,
         Expires = DateTime.UtcNow.AddMinutes(10),
         ContentType = "application/octet-stream",
+        
     };
 
     return await client.GetPreSignedURLAsync(request);

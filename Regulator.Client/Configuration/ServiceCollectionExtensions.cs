@@ -14,6 +14,7 @@ using Regulator.Client.Handlers.Client.Notifications;
 using Regulator.Client.Handlers.Server.Connection;
 using Regulator.Client.Handlers.Server.Glamourer;
 using Regulator.Client.Handlers.Server.Management;
+using Regulator.Client.Handlers.Server.Penumbra;
 using Regulator.Client.Logging;
 using Regulator.Client.Models.Configuration;
 using Regulator.Client.Services.ApiClients;
@@ -70,6 +71,7 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<SyncRequestFinalizedHandler>();
         services.AddHostedService<UploadFilesHandler>();
         services.AddHostedService<DownloadFilesHandler>();
+        services.AddHostedService<ResourceAppliedHandler>();
         
         // Server event handlers
         services.AddHostedService<ClientOnlineHandler>();

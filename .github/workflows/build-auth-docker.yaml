@@ -11,6 +11,8 @@ on:
       - 'Regulator.Client/**'
       - 'Regulator.Services.Sync/**'
       - 'Regulator.Services.Sync.Shared/**'
+      - 'Regulator.Services.Files/**'
+      - 'Regulator.Services.Files.Shared/**'
       - '.github/workflows/**'
       - 'ecs/sync-task-definition.json'
   pull_request:

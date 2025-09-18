@@ -67,9 +67,9 @@ public class PenumbraApiClient : IPenumbraApiClient
             return;
         }
         
-        var filePaths = new Dictionary<nint, HashSet<string>>
+        var filePaths = new Dictionary<nint, HashSet<FileReplacement>>
         {
-            { pointer, [redirectedFilePath] }
+            { pointer, [new FileReplacement(originalFilePath, redirectedFilePath, string.Empty)] }
         };
         
         var message = new UploadFiles(filePaths);
@@ -101,9 +101,9 @@ public class PenumbraApiClient : IPenumbraApiClient
 
         if (!isDownload)
         {
-            var filePathsByPointer = new Dictionary<nint, HashSet<string>>
+            var filePathsByPointer = new Dictionary<nint, HashSet<FileReplacement>>
             {
-                { 0, paths.Select(kv => kv.Key).ToHashSet() }
+                { 0, paths.Select(kv => new FileReplacement(kv.Value.First(), kv.Key, string.Empty)).ToHashSet() }
             };
             var message = new UploadFiles(filePathsByPointer);
             
@@ -154,8 +154,7 @@ public class PenumbraApiClient : IPenumbraApiClient
     {
         if (!_temporaryCollections.TryGetValue(syncCode, out var collectionId))
         {
-            _logger.LogWarning("No temporary Penumbra collection found for sync code {SyncCode} when adding mod.", syncCode);
-            return;
+            await CreateTemporaryCollection(syncCode);
         }
 
         var filePaths = new Dictionary<string, string>

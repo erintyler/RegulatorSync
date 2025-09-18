@@ -33,7 +33,7 @@ public class SendOnlineDataHandler(IUserContextService userContextService, IHubC
         
         var user = userResult.Value;
 
-        var notifyDto = new NotifyClientOnlineDto
+        var notifyDto = new ClientOnlineDto
         {
             SourceSyncCode = user.SyncCode,
             TargetSyncCode = dto.TargetSyncCode,

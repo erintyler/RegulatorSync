@@ -14,10 +14,12 @@ using Regulator.Services.Sync.Hubs;
 using Regulator.Services.Sync.RequestHandlers;
 using Regulator.Services.Sync.RequestHandlers.Glamourer;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
+using Regulator.Services.Sync.RequestHandlers.Penumbra;
 using Regulator.Services.Sync.Services;
 using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -51,6 +53,7 @@ builder.Services.AddScoped<IRequestHandler<RequestCustomizationsDto>, RequestCus
 builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>();
 builder.Services.AddScoped<IRequestHandler<SyncRequestResponseDto>, SyncRequestResponseHandler>();
 builder.Services.AddScoped<IRequestHandler<SendOnlineDataDto>, SendOnlineDataHandler>();
+builder.Services.AddScoped<IRequestHandler<NotifyResourceAppliedDto>, NotifyResourceAppliedHandler>();
 builder.Services.AddScoped<IRequestHandlerFactory, RequestHandlerFactory>();
 
 builder.Services.AddHealthChecks();

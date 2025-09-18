@@ -7,11 +7,13 @@ using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Management;
 using Regulator.Client.Events.Server.Connection;
 using Regulator.Client.Events.Server.Glamourer;
+using Regulator.Client.Events.Server.Penumbra;
 using Regulator.Client.Models;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client;
 using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
 using Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Client.Penumbra;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Services.Hubs;
@@ -26,7 +28,8 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         connection.On<ConnectedDto>(nameof(OnConnectedAsync), OnConnectedAsync);
         connection.On<ReceiveSyncRequestDto>(nameof(OnReceiveSyncRequestAsync), OnReceiveSyncRequestAsync);
         connection.On<SyncRequestFinalizedDto>(nameof(OnSyncRequestFinalizedAsync), OnSyncRequestFinalizedAsync);
-        connection.On<NotifyClientOnlineDto>(nameof(OnClientOnlineAsync), OnClientOnlineAsync);
+        connection.On<ClientOnlineDto>(nameof(OnClientOnlineAsync), OnClientOnlineAsync);
+        connection.On<ResourceAppliedDto>(nameof(OnResourceAppliedAsync), OnResourceAppliedAsync);
         
         return Task.CompletedTask;
     }
@@ -40,6 +43,7 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         connection.Remove(nameof(OnReceiveSyncRequestAsync));
         connection.Remove(nameof(OnSyncRequestFinalizedAsync));
         connection.Remove(nameof(OnClientOnlineAsync));
+        connection.Remove(nameof(OnResourceAppliedAsync));
         
         return Task.CompletedTask;
     }
@@ -86,10 +90,17 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         await mediator.PublishAsync(syncRequestFinalized);
     }
 
-    public async Task OnClientOnlineAsync(NotifyClientOnlineDto notifyClientOnlineDto)
+    public async Task OnClientOnlineAsync(ClientOnlineDto clientOnlineDto)
     {
-        var clientOnline = new ClientOnline(notifyClientOnlineDto.SourceSyncCode!, notifyClientOnlineDto.CharacterId);
+        var clientOnline = new ClientOnline(clientOnlineDto.SourceSyncCode!, clientOnlineDto.CharacterId);
         
         await mediator.PublishAsync(clientOnline);
+    }
+
+    public async Task OnResourceAppliedAsync(ResourceAppliedDto resourceAppliedDto)
+    {
+        var resourceApplied = new ResourceApplied(resourceAppliedDto.SourceSyncCode!, resourceAppliedDto.Hash, resourceAppliedDto.GamePath);
+        
+        await mediator.PublishAsync(resourceApplied);
     }
 }

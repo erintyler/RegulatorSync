@@ -10,8 +10,10 @@ using Regulator.Client.Events.Client.Notifications;
 using Regulator.Client.Services.Authentication.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Client.Penumbra;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
 using Regulator.Services.Sync.Shared.Enums;
 using Regulator.Services.Sync.Shared.Hubs;
 
@@ -159,6 +161,16 @@ public class RegulatorServerClient(
         }
         
         await connection.SendAsync(nameof(RespondToSyncRequestAsync), dto);
+    }
+
+    public async Task NotifyResourceAppliedAsync(NotifyResourceAppliedDto dto)
+    {
+        if (connection.State is not HubConnectionState.Connected)
+        {
+            return;
+        }
+        
+        await connection.SendAsync(nameof(NotifyResourceAppliedAsync), dto);
     }
 
     public async Task SendOnlineDataAsync(SendOnlineDataDto dto)

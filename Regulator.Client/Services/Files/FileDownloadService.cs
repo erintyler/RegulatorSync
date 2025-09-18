@@ -19,16 +19,16 @@ public class FileDownloadService(
     IHttpClientFactory httpClientFactory, 
     ILogger<FileDownloadService> logger) : IFileDownloadService
 {
-    public async Task DownloadFileAsync(string uncompressedHash, CancellationToken cancellationToken = default)
+    public async Task<string> DownloadFileAsync(string uncompressedHash, CancellationToken cancellationToken = default)
     {
-        var fileExists = dbContext.Files
+        var file = await dbContext.Files
             .AsNoTracking()
-            .Any(f => f.Hash == uncompressedHash);
+            .FirstOrDefaultAsync(f => f.Hash == uncompressedHash, cancellationToken: cancellationToken);
         
-        if (fileExists)
+        if (file is not null)
         {
             logger.LogInformation("File with hash {Hash} already exists locally. Skipping download.", uncompressedHash);
-            return;
+            return file.FilePath;
         }
         
         var presignedResponse = await fileApi.GetPresignedDownloadUrlAsync(uncompressedHash, cancellationToken);
@@ -49,5 +49,7 @@ public class FileDownloadService(
         });
         
         await dbContext.SaveChangesAsync(cancellationToken);
+        
+        return destinationFilePath;
     }
 }

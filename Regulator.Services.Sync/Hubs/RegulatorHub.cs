@@ -5,8 +5,10 @@ using Regulator.Services.Shared.Services.Interfaces;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
 using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client.Connections;
+using Regulator.Services.Sync.Shared.Dtos.Client.Penumbra;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Services.Sync.Hubs;
@@ -60,7 +62,7 @@ public class RegulatorHub(
         
         await Clients.Caller.OnConnectedAsync(connectedDto);
         
-        var notifyClientOnlineDto = new NotifyClientOnlineDto
+        var notifyClientOnlineDto = new ClientOnlineDto
         {
             SourceSyncCode = userResult.Value.SyncCode,
             CharacterId = characterIdResult.Value
@@ -103,6 +105,13 @@ public class RegulatorHub(
     public async Task SendOnlineDataAsync(SendOnlineDataDto dto)
     {
         var handler = requestHandlerFactory.GetHandler<SendOnlineDataDto>();
+        
+        await handler.HandleAsync(dto);
+    }
+
+    public async Task NotifyResourceAppliedAsync(NotifyResourceAppliedDto dto)
+    {
+        var handler = requestHandlerFactory.GetHandler<NotifyResourceAppliedDto>();
         
         await handler.HandleAsync(dto);
     }

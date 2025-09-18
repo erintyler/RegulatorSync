@@ -1,6 +1,7 @@
 ﻿using Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
 using Regulator.Services.Sync.Shared.Enums;
 
 namespace Regulator.Services.Sync.Shared.Hubs;
@@ -13,5 +14,5 @@ public interface IRegulatorServerMethods
     Task RequestCustomizationsAsync(RequestCustomizationsDto dto);
     Task AddSyncCodeAsync(SyncRequestDto dto);
     Task RespondToSyncRequestAsync(SyncRequestResponseDto dto);
-    Task SendOnlineDataAsync(SendOnlineDataDto dto);
+    Task NotifyResourceAppliedAsync(NotifyResourceAppliedDto dto);
 }

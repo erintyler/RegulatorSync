@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Files;
+using Regulator.Client.Models.Penumbra;
 using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Hosting;
 using Regulator.Client.Services.Utilities.Interfaces;
+using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
+using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Handlers.Client.Files;
 
@@ -18,6 +21,7 @@ public class UploadFilesHandler(
     IThreadService threadService,
     IFileHashService fileHashService,
     IFileUploadService fileUploadService,
+    IRegulatorServerMethods regulatorServerMethods,
     IMediator mediator, 
     ILogger<UploadFilesHandler> logger) : BaseMediatorHostedService<UploadFiles>(mediator, logger)
 {
@@ -35,21 +39,24 @@ public class UploadFilesHandler(
         }
     }
     
-    private async Task UploadFileAsync(string filePath, CancellationToken cancellationToken = default)
+    private async Task UploadFileAsync(FileReplacement fileReplacement, CancellationToken cancellationToken = default)
     {
-        await using var file = File.OpenRead(filePath);
+        await using var file = File.OpenRead(fileReplacement.ReplacementPath);
         var hash = await fileHashService.ComputeHashAsync(file);
         
         if (await fileUploadService.CheckFileExistsAsync(hash, cancellationToken))
         {
-            logger.LogInformation("File '{FilePath}' ({Hash}) already exists on server. Skipping upload.", filePath, hash);
+            logger.LogInformation("File '{FilePath}' ({Hash}) already exists on server. Skipping upload.", fileReplacement.ReplacementPath, hash);
+            await SendNotifyAsync(fileReplacement, hash, cancellationToken);
+            
             return;
         }
         
         var compressedPath = await compressionService.CompressFileFromStreamAsync(file);
-        logger.LogInformation("File '{FilePath}' ({Hash}) compressed to '{CompressedPath}'", filePath, hash, compressedPath);
+        logger.LogInformation("File '{FilePath}' ({Hash}) compressed to '{CompressedPath}'", fileReplacement.ReplacementPath, hash, compressedPath);
         
-        await fileUploadService.UploadFileAsync(compressedPath, hash, Path.GetExtension(filePath) ,cancellationToken);
+        await fileUploadService.UploadFileAsync(compressedPath, hash, Path.GetExtension(fileReplacement.ReplacementPath) ,cancellationToken);
+        await SendNotifyAsync(fileReplacement, hash, cancellationToken);
         
         try
         {
@@ -60,5 +67,16 @@ public class UploadFilesHandler(
         {
             logger.LogWarning(ex, "Failed to delete temporary compressed file '{CompressedPath}'", compressedPath);
         }
+    }
+    
+    private async Task SendNotifyAsync(FileReplacement fileReplacement, string hash, CancellationToken cancellationToken = default)
+    {
+        var dto = new NotifyResourceAppliedDto
+        {
+            GamePath = fileReplacement.OriginalPath,
+            Hash = hash,
+        };
+        
+        await regulatorServerMethods.NotifyResourceAppliedAsync(dto);
     }
 }

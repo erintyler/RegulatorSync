@@ -1,4 +1,4 @@
-﻿namespace Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
+﻿namespace Regulator.Services.Sync.Shared.Dtos.Client.Penumbra;
 
 public class ResourceAppliedDto : BaseSyncDto
 {

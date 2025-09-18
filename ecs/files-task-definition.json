@@ -3,9 +3,9 @@
     {
       "environmentFiles": [],
       "essential": true,
-      "image": "886436922604.dkr.ecr.eu-west-2.amazonaws.com/regulator/auth-service@sha256:0b8c17b6cc2fb8c98a86307beec8b0fd9586cce1e05bef5960df4dbbe4264992",
+      "image": "886436922604.dkr.ecr.eu-west-2.amazonaws.com/regulator/files-service@sha256:0b8c17b6cc2fb8c98a86307beec8b0fd9586cce1e05bef5960df4dbbe4264992",
       "mountPoints": [],
-      "name": "auth-service",
+      "name": "files-service",
       "portMappings": [
         {
           "appProtocol": "http",
@@ -21,20 +21,12 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/auth-service",
+          "awslogs-group": "/ecs/files-service",
           "awslogs-region": "eu-west-2",
-          "awslogs-stream-prefix": "auth-service"
+          "awslogs-stream-prefix": "files-service"
         }
       },
       "secrets": [
-        {
-          "name": "Authentication__Discord__ClientId",
-          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/auth-service/discord/client-id"
-        },
-        {
-          "name": "Authentication__Discord__ClientSecret",
-          "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/auth-service/discord/client-secret"
-        },
         {
           "name": "TokenSettings__Audience",
           "valueFrom": "arn:aws:ssm:eu-west-2:886436922604:parameter/shared/token/audience"
@@ -68,9 +60,9 @@
       }
     }
   ],
-  "cpu": "256",
+  "cpu": "512",
   "executionRoleArn": "arn:aws:iam::886436922604:role/ecsTaskExecutionRole",
-  "family": "auth-service",
+  "family": "files-service",
   "memory": "128",
   "networkMode": "bridge",
   "requiresCompatibilities": [

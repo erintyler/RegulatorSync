@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Regulator.Client.Events.Client.Management;
 using Regulator.Client.Services.Authentication.Interfaces;
 using Regulator.Client.Services.Data.Interfaces;
+using Regulator.Client.Services.Interop.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Enums;
 using Regulator.Services.Sync.Shared.Hubs;
@@ -20,17 +21,19 @@ public class MainWindow : Window, IDisposable
     private readonly IAuthenticationService _authenticationService;
     private readonly IRegulatorServerMethods _client;
     private readonly IClientDataService _clientDataService;
+    private readonly IPenumbraApiClient _penumbraApiClient;
     
     private string _syncCode = string.Empty;
     private bool _showAddSyncCodePopup;
     
-    public MainWindow(IMediator mediator, ILogger<MainWindow> logger, IRegulatorServerMethods client, IClientDataService clientDataService, IAuthenticationService authenticationService) : base("Regulator", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+    public MainWindow(IMediator mediator, ILogger<MainWindow> logger, IRegulatorServerMethods client, IClientDataService clientDataService, IAuthenticationService authenticationService, IPenumbraApiClient penumbraApiClient) : base("Regulator", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         _mediator = mediator;
         _logger = logger;
         _client = client;
         _clientDataService = clientDataService;
         _authenticationService = authenticationService;
+        _penumbraApiClient = penumbraApiClient;
 
         SizeConstraints = new WindowSizeConstraints
         {
@@ -59,6 +62,21 @@ public class MainWindow : Window, IDisposable
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+        
+        if (ImGui.Button("Penumbra Test"))
+        {
+            _logger.LogInformation("Fetching Penumbra resource paths for local player.");
+            _penumbraApiClient.GetCustomResourcePathsAsync(false).GetAwaiter().GetResult();
+        }
+        
+        ImGui.SameLine();
+        
+        if (ImGui.Button("Penumbra Download Test"))
+        {
+            _logger.LogInformation("Fetching Penumbra resource paths for local player (download test).");
+            _penumbraApiClient.GetCustomResourcePathsAsync(true).GetAwaiter().GetResult();
+            _penumbraApiClient.AssignTemporaryCollection("test").GetAwaiter().GetResult();
         }
         
         // Add login button if disconnected

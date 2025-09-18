@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Refit;
 using Regulator.Client.Commands;
+using Regulator.Client.Handlers.Client.Files;
 using Regulator.Client.Handlers.Client.Glamourer;
 using Regulator.Client.Handlers.Client.Management;
 using Regulator.Client.Handlers.Client.Notifications;
@@ -16,10 +16,13 @@ using Regulator.Client.Handlers.Server.Glamourer;
 using Regulator.Client.Handlers.Server.Management;
 using Regulator.Client.Logging;
 using Regulator.Client.Models.Configuration;
+using Regulator.Client.Services.ApiClients;
 using Regulator.Client.Services.Authentication;
 using Regulator.Client.Services.Authentication.Interfaces;
 using Regulator.Client.Services.Data;
 using Regulator.Client.Services.Data.Interfaces;
+using Regulator.Client.Services.Files;
+using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Hubs;
 using Regulator.Client.Services.Interop;
 using Regulator.Client.Services.Interop.Interfaces;
@@ -33,7 +36,6 @@ using Regulator.Client.Windows;
 using Regulator.Services.Sync.Shared.Hubs;
 using Regulator.Services.Sync.Shared.Services;
 using Regulator.Services.Sync.Shared.Services.Interfaces;
-using Serilog;
 using ClientHandlers = Regulator.Client.Handlers.Client;
 using ServerHandlers = Regulator.Client.Handlers.Server;
 using Task = System.Threading.Tasks.Task;
@@ -66,6 +68,8 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<OnConnectedHandler>();
         services.AddHostedService<SyncRequestResponseHandler>();
         services.AddHostedService<SyncRequestFinalizedHandler>();
+        services.AddHostedService<UploadFilesHandler>();
+        services.AddHostedService<DownloadFilesHandler>();
         
         // Server event handlers
         services.AddHostedService<ClientOnlineHandler>();
@@ -79,6 +83,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInteropServices(this IServiceCollection services)
     {
         services.AddSingleton<IGlamourerApiClient, GlamourerApiClient>();
+        services.AddSingleton<IPenumbraApiClient, PenumbraApiClient>();
 
         return services;
     }
@@ -194,6 +199,17 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IClientDataService, ClientDataService>();
         services.AddSingleton<ISyncRequestService, SyncRequestService>();
+        services.AddSingleton<ICompressionService, CompressionService>();
+        services.AddSingleton<IFileHashService, FileHashService>();
+        services.AddSingleton<IFileUploadService, FileUploadService>();
+        services.AddSingleton<IFileDownloadService, FileDownloadService>();
+        services.AddHttpClient();
+
+        services.AddSingleton<AuthHeaderHandler>();
+
+        services.AddRefitClient<IFileApi>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5221"))
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
         return services;
     }

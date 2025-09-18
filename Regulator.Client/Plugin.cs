@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Configuration;
+using Regulator.Client.Data.Configuration;
 using Regulator.Client.Services.Providers.Interfaces;
 using Regulator.Services.Sync.Shared.Services.Interfaces;
 
@@ -36,6 +37,7 @@ public sealed class Plugin : IDalamudPlugin
             builder.Services.AddCommands();
             builder.Services.AddWindows();
             builder.Services.AddData();
+            builder.Services.AddDatabase();
 
             _host = builder.Build();
 

@@ -52,6 +52,10 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        var hash = _hashService.ComputeHash("Anastasia Rossweiss:83");
+        _hashProvider.AddOrUpdateHash("test", hash);
+        _syncCodeProvider.AddSyncCode(hash, "test");
+        
         _framework.Update += UpdateVisiblePlayers;
     }
 

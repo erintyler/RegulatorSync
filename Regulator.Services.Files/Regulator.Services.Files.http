@@ -1,0 +1,11 @@
+@Regulator.Services.Files_HostAddress = http://localhost:5221
+
+GET {{Regulator.Services.Files_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Regulator.Services.Files_HostAddress}}/todos/1
+Accept: application/json
+
+###

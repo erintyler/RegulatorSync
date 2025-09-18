@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <PublishAot>true</PublishAot>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
@@ -15,13 +16,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Regulator.Data.Redis\Regulator.Data.Redis.csproj" />
-      <ProjectReference Include="..\Regulator.Services.Shared\Regulator.Services.Shared.csproj" />
-      <ProjectReference Include="..\Regulator.Services.Sync.Shared\Regulator.Services.Sync.Shared.csproj" />
+      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3" />
+      <PackageReference Include="AWSSDK.S3" Version="4.0.7.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3" />
+      <ProjectReference Include="..\Regulator.Services.Files.Shared\Regulator.Services.Files.Shared.csproj" />
+      <ProjectReference Include="..\Regulator.Services.Shared\Regulator.Services.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>

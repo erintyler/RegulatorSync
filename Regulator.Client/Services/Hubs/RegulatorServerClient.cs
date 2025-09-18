@@ -31,43 +31,50 @@ public class RegulatorServerClient(
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        try 
+        clientState.Login += ClientStateOnLogin;
+        clientState.Logout += ClientStateOnLogout;
+            
+        if (!clientState.IsLoggedIn)
         {
-            clientState.Login += ClientStateOnLogin;
-            clientState.Logout += ClientStateOnLogout;
-            
-            if (!clientState.IsLoggedIn)
-            {
-                return;
-            }
-            
-            BindEventHandlers();
-
-            var accessToken = accessTokenProvider.GetAccessToken();
-            
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                logger.LogWarning("No access token available, cannot connect to Regulator");
-                return;
-            }
-
-            var token = hostApplicationLifetime.ApplicationStarted;
-            await Task.Delay(Timeout.Infinite, token);
-            
-            ConnectionState = ConnectionState.Connecting;
-            await connection.StartAsync(cancellationToken);
-            ConnectionState = ConnectionState.Connected;
-            logger.LogInformation("Connected to Regulator with connection ID: {ConnectionId}", connection.ConnectionId);
-            
-            await SendConnectedNotification(cancellationToken);
+            return;
         }
-        catch (Exception ex)
+            
+        BindEventHandlers();
+
+        var accessToken = accessTokenProvider.GetAccessToken();
+            
+        if (string.IsNullOrEmpty(accessToken))
         {
-            logger.LogError(ex, "Failed to connect to Regulator server hub.");
-            ConnectionState = ConnectionState.Disconnected;
-
-            await SendFailedToConnectNotification(ex, cancellationToken);
+            logger.LogWarning("No access token available, cannot connect to Regulator");
+            return;
         }
+
+        _ = Task.Run(async () =>
+        {
+            try 
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                hostApplicationLifetime.ApplicationStarted.Register(() => tcs.TrySetResult(true));
+                await tcs.Task;
+                
+                logger.LogInformation("Connecting to Regulator...");
+
+                ConnectionState = ConnectionState.Connecting;
+                await connection.StartAsync(cancellationToken);
+                ConnectionState = ConnectionState.Connected;
+                logger.LogInformation("Connected to Regulator with connection ID: {ConnectionId}",
+                    connection.ConnectionId);
+
+                await SendConnectedNotification(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to connect to Regulator server hub.");
+                ConnectionState = ConnectionState.Disconnected;
+
+                await SendFailedToConnectNotification(ex, cancellationToken);
+            }
+        });
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

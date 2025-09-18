@@ -1,19 +1,19 @@
 [
   {
-    "Name": "Regulator",
-    "RepoUrl": "https://github.com/erintyler/RegulatorSync",
-    "DownloadLinkInstall": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.32/Regulator.Client.zip",
+    "DownloadLinkInstall": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.33/Regulator.Client.zip",
     "DalamudApiLevel": 13,
-    "Version": "0.0.32",
-    "InternalName": "Regulator",
-    "Author": "Saxolotl",
-    "DownloadLinkUpdate": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.32/Regulator.Client.zip",
+    "AssemblyVersion": "0.0.33.0",
+    "Version": "0.0.33",
     "Description": "Sync your appearance with your friends!",
-    "AssemblyVersion": "0.0.32.0",
+    "RepoUrl": "https://github.com/erintyler/RegulatorSync",
+    "Name": "Regulator",
+    "Author": "Saxolotl",
+    "InternalName": "Regulator",
     "Tags": [
       "plugin",
       "regulator"
     ],
+    "DownloadLinkUpdate": "https://github.com/erintyler/RegulatorSync/releases/download/0.0.33/Regulator.Client.zip",
     "Punchline": "Sync your appearance with your friends!"
   }
 ]

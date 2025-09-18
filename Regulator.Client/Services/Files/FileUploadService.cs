@@ -40,7 +40,12 @@ public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientF
             using var uploadClient = httpClientFactory.CreateClient();
             await using var fileStream = File.OpenRead(compressedFilePath);
             var response = await uploadClient.PutAsync(presignedUrlResponse.Url, new StreamContent(fileStream), cancellationToken);
-            response.EnsureSuccessStatusCode();
+            
+            if (!response.IsSuccessStatusCode) 
+            {
+                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new HttpRequestException($"Failed to upload file to presigned URL. Status code: {response.StatusCode}, Response: {responseBody}");
+            }
 
             await fileApi.FinalizeUploadAsync(uncompressedHash, cancellationToken);
             logger.LogInformation("File {FilePath} uploaded successfully", compressedFilePath);

@@ -62,10 +62,14 @@ builder.Services.AddSingleton<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddSingleton<IUserCreationService, UserCreationService>();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/health");
 
 app.MapPost("/{hash}/upload-url/", async (IFileService fileService, string hash, [FromBody] GetPresignedUploadUrlRequestDto dto) =>
 {

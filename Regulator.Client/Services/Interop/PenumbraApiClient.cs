@@ -59,6 +59,7 @@ public class PenumbraApiClient : IPenumbraApiClient
 
     private void OnPlayerSeen(Player player)
     {
+        CreateTemporaryCollection(player.SyncCode);
         AssignTemporaryCollection(player.SyncCode);
     }
 
@@ -119,7 +120,7 @@ public class PenumbraApiClient : IPenumbraApiClient
         }
         else
         {
-            await CreateTemporaryCollection("test");
+            CreateTemporaryCollection("test");
             
             foreach (var path in paths)
             {
@@ -138,7 +139,7 @@ public class PenumbraApiClient : IPenumbraApiClient
         return paths;
     }
 
-    public async Task<Guid> CreateTemporaryCollection(string syncCode)
+    public Guid CreateTemporaryCollection(string syncCode)
     {
         if (_temporaryCollections.TryGetValue(syncCode, out var existingCollectionId))
         {
@@ -162,7 +163,7 @@ public class PenumbraApiClient : IPenumbraApiClient
     {
         if (!_temporaryCollections.TryGetValue(syncCode, out var collectionId))
         {
-            await CreateTemporaryCollection(syncCode);
+            CreateTemporaryCollection(syncCode);
         }
 
         var filePaths = new Dictionary<string, string>

@@ -22,6 +22,7 @@ namespace Regulator.Client.Services.Hubs;
 public class RegulatorServerClient(
     HubConnection connection, 
     IAccessTokenProvider accessTokenProvider, 
+    IHostApplicationLifetime hostApplicationLifetime,
     IClientState clientState,
     IMediator mediator, 
     ILogger<RegulatorServerClient> logger) : IRegulatorServerMethods, IHostedService, IDisposable
@@ -49,6 +50,9 @@ public class RegulatorServerClient(
                 logger.LogWarning("No access token available, cannot connect to Regulator");
                 return;
             }
+
+            var token = hostApplicationLifetime.ApplicationStarted;
+            await Task.Delay(Timeout.Infinite, token);
             
             ConnectionState = ConnectionState.Connecting;
             await connection.StartAsync(cancellationToken);

@@ -38,6 +38,7 @@ public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientF
             logger.LogInformation("Uploading file {FilePath} to presigned URL {URL}", compressedFilePath, presignedUrlResponse);
 
             using var uploadClient = httpClientFactory.CreateClient();
+            uploadClient.DefaultRequestHeaders.Add("Content-Type", "application/octet-stream");
             await using var fileStream = File.OpenRead(compressedFilePath);
             var response = await uploadClient.PutAsync(presignedUrlResponse.Url, new StreamContent(fileStream), cancellationToken);
             

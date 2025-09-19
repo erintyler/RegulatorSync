@@ -32,7 +32,8 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     private readonly IPluginLog _logger;
 
     public event Action<Player>? OnPlayerSeen;
-    
+    public event Action<Player>? OnPlayerLeft;
+
     public PlayerProvider(ICharacterHashProvider hashProvider,
         IClientState clientState,
         ICondition condition,
@@ -182,6 +183,11 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
             var toRemove = _visiblePlayersByHash.Keys.Except(seenHashes).ToList();
             foreach (var hash in toRemove)
             {
+                if (_visiblePlayersByHash.TryGetValue(hash, out var player))
+                {
+                    OnPlayerLeft?.Invoke(player);
+                }
+                
                 _visiblePlayersByHash.TryRemove(hash, out _);
                 _logger.Info("Removed visible player with hash: {Hash}", hash);
             }

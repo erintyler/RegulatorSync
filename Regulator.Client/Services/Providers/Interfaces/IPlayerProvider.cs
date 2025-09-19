@@ -12,4 +12,5 @@ public interface IPlayerProvider
     Player? GetPendingPlayerBySyncCode(string syncCode);
 
     event Action<Player>? OnPlayerSeen;
+    event Action<Player>? OnPlayerLeft;
 }

@@ -11,7 +11,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AWS_ACCESS_KEY_ID": "test",
         "AWS_SECRET_ACCESS_KEY": "test",
-        "AWS_REGION": "us-east-1"
+        "AWS_REGION": "us-east-1",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317",
+        "OTEL_SERVICE_NAME": "files-service"
       }
     }
   }

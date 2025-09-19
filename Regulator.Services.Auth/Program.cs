@@ -16,15 +16,14 @@ using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Constants;
 using Regulator.Services.Shared.Services;
 using Regulator.Services.Shared.Services.Interfaces;
-using Serilog;
-
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .Enrich.FromLogContext()
-    .CreateLogger();
+using Sentry.OpenTelemetry;
 
 var builder = WebApplication.CreateSlimBuilder(args);
-builder.Host.UseSerilog();
+builder.AddServiceDefaults();
+builder.WebHost.UseSentry(o =>
+{
+    o.UseOpenTelemetry();
+});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -102,7 +101,6 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
 

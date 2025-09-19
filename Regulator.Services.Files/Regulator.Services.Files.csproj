@@ -17,6 +17,7 @@
     <ItemGroup>
       <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3" />
       <PackageReference Include="AWSSDK.S3" Version="4.0.7.2" />
+      <PackageReference Include="Sentry.AspNetCore" Version="5.15.0" />
     </ItemGroup>
 
     <ItemGroup>

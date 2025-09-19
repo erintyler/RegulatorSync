@@ -109,9 +109,9 @@ public class RegulatorHub(
         await handler.HandleAsync(dto);
     }
 
-    public async Task NotifyResourceAppliedAsync(NotifyResourceAppliedDto dto)
+    public async Task NotifyResourceAppliedAsync(NotifyResourcesAppliedDto dto)
     {
-        var handler = requestHandlerFactory.GetHandler<NotifyResourceAppliedDto>();
+        var handler = requestHandlerFactory.GetHandler<NotifyResourcesAppliedDto>();
         
         await handler.HandleAsync(dto);
     }

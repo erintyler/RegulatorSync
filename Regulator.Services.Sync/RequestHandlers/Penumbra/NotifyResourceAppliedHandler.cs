@@ -8,11 +8,11 @@ using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Services.Sync.RequestHandlers.Penumbra;
 
-public class NotifyResourceAppliedHandler(IUserContextService userContextService, IHubContext<RegulatorHub, IRegulatorClientMethods> context, ILogger<NotifyResourceAppliedHandler> logger) : IRequestHandler<NotifyResourceAppliedDto>
+public class NotifyResourceAppliedHandler(IUserContextService userContextService, IHubContext<RegulatorHub, IRegulatorClientMethods> context, ILogger<NotifyResourceAppliedHandler> logger) : IRequestHandler<NotifyResourcesAppliedDto>
 {
-    public async Task HandleAsync(NotifyResourceAppliedDto dto, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(NotifyResourcesAppliedDto dto, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Handling NotifyResourceApplied for Hash: {Hash}, GamePath: {GamePath}, TargetSyncCode: {TargetSyncCode}", dto.Hash, dto.GamePath, dto.TargetSyncCode);
+        logger.LogDebug("Handling NotifyResourceAppliedDto: {@Dto}", dto);
         
         var userResult = await userContextService.GetCurrentUserAsync(cancellationToken);
 
@@ -21,10 +21,9 @@ public class NotifyResourceAppliedHandler(IUserContextService userContextService
             throw new InvalidOperationException(userResult.ErrorMessage);
         }
         
-        var resourceAppliedDto = new ResourceAppliedDto
+        var resourceAppliedDto = new ResourcesAppliedDto
         {
-            Hash = dto.Hash,
-            GamePath = dto.GamePath,
+            Resources = dto.Resources,
             SourceSyncCode = userResult.Value.SyncCode
         };
 

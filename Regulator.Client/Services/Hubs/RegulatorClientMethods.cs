@@ -29,7 +29,7 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         connection.On<ReceiveSyncRequestDto>(nameof(OnReceiveSyncRequestAsync), OnReceiveSyncRequestAsync);
         connection.On<SyncRequestFinalizedDto>(nameof(OnSyncRequestFinalizedAsync), OnSyncRequestFinalizedAsync);
         connection.On<ClientOnlineDto>(nameof(OnClientOnlineAsync), OnClientOnlineAsync);
-        connection.On<ResourceAppliedDto>(nameof(OnResourceAppliedAsync), OnResourceAppliedAsync);
+        connection.On<ResourcesAppliedDto>(nameof(OnResourceAppliedAsync), OnResourceAppliedAsync);
         
         return Task.CompletedTask;
     }
@@ -97,10 +97,13 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         await mediator.PublishAsync(clientOnline);
     }
 
-    public async Task OnResourceAppliedAsync(ResourceAppliedDto resourceAppliedDto)
+    public async Task OnResourceAppliedAsync(ResourcesAppliedDto resourcesAppliedDto)
     {
-        var resourceApplied = new ResourceApplied(resourceAppliedDto.SourceSyncCode!, resourceAppliedDto.Hash, resourceAppliedDto.GamePath);
-        
-        await mediator.PublishAsync(resourceApplied);
+        foreach (var resource in resourcesAppliedDto.Resources)
+        {
+            var resourceApplied = new ResourceApplied(resourcesAppliedDto.SourceSyncCode!, resource.Hash, resource.GamePath);
+            
+            await mediator.PublishAsync(resourceApplied);
+        }
     }
 }

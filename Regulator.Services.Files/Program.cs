@@ -15,8 +15,14 @@ using Regulator.Services.Shared.Configuration;
 using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Services;
 using Regulator.Services.Shared.Services.Interfaces;
+using Sentry.OpenTelemetry;
 
 var builder = WebApplication.CreateSlimBuilder(args);
+builder.AddServiceDefaults();
+builder.WebHost.UseSentry(o =>
+{
+    o.UseOpenTelemetry();
+});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {

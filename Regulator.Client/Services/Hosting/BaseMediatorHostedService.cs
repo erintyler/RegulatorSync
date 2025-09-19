@@ -24,7 +24,7 @@ public abstract class BaseMediatorHostedService<TEvent>(IMediator mediator, ILog
     
     private Task AddLoggingToHandleAsync(TEvent eventData, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handling event of type {EventType}", typeof(TEvent).Name);
+        logger.LogDebug("Handling event of type {EventType}", typeof(TEvent).Name);
         return HandleAsync(eventData, cancellationToken);
     }
 

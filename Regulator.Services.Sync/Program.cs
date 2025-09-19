@@ -20,8 +20,15 @@ using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
 using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
+using Sentry.OpenTelemetry;
 
 var builder = WebApplication.CreateSlimBuilder(args);
+builder.AddServiceDefaults();
+builder.WebHost.UseSentry(o =>
+{
+    o.DisableSentryHttpMessageHandler = true;
+    o.UseOpenTelemetry();
+});
 
 var tokenSettings = new TokenSettings
 {
@@ -53,7 +60,7 @@ builder.Services.AddScoped<IRequestHandler<RequestCustomizationsDto>, RequestCus
 builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>();
 builder.Services.AddScoped<IRequestHandler<SyncRequestResponseDto>, SyncRequestResponseHandler>();
 builder.Services.AddScoped<IRequestHandler<SendOnlineDataDto>, SendOnlineDataHandler>();
-builder.Services.AddScoped<IRequestHandler<NotifyResourceAppliedDto>, NotifyResourceAppliedHandler>();
+builder.Services.AddScoped<IRequestHandler<NotifyResourcesAppliedDto>, NotifyResourceAppliedHandler>();
 builder.Services.AddScoped<IRequestHandlerFactory, RequestHandlerFactory>();
 
 builder.Services.AddHealthChecks();

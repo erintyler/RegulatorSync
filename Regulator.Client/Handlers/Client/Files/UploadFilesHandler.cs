@@ -9,9 +9,9 @@ using Regulator.Client.Events.Client.Files;
 using Regulator.Client.Models.Penumbra;
 using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Hosting;
+using Regulator.Client.Services.Notifications.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
-using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Handlers.Client.Files;
 
@@ -21,7 +21,7 @@ public class UploadFilesHandler(
     IThreadService threadService,
     IFileHashService fileHashService,
     IFileUploadService fileUploadService,
-    IRegulatorServerMethods regulatorServerMethods,
+    INotificationBatchingService notificationBatchingService,
     IMediator mediator, 
     ILogger<UploadFilesHandler> logger) : BaseMediatorHostedService<UploadFiles>(mediator, logger)
 {
@@ -71,12 +71,8 @@ public class UploadFilesHandler(
     
     private async Task SendNotifyAsync(FileReplacement fileReplacement, string hash, CancellationToken cancellationToken = default)
     {
-        var dto = new NotifyResourceAppliedDto
-        {
-            GamePath = fileReplacement.OriginalPath,
-            Hash = hash,
-        };
+        var dto = new ResourceDto(fileReplacement.OriginalPath, hash);
         
-        await regulatorServerMethods.NotifyResourceAppliedAsync(dto);
+        await notificationBatchingService.QueueResourceAsync(dto, cancellationToken);
     }
 }

@@ -174,7 +174,7 @@ public class RegulatorServerClient(
         await connection.SendAsync(nameof(RespondToSyncRequestAsync), dto);
     }
 
-    public async Task NotifyResourceAppliedAsync(NotifyResourceAppliedDto dto)
+    public async Task NotifyResourceAppliedAsync(NotifyResourcesAppliedDto dto)
     {
         if (connection.State is not HubConnectionState.Connected)
         {

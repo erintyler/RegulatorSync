@@ -1,7 +1,6 @@
 ﻿namespace Regulator.Client.Data.Models;
 
-public class File
+public class UploadedFile
 {
     public required string Hash { get; set; }
-    public required string FilePath { get; set; }
 }

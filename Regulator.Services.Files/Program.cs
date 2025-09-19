@@ -57,6 +57,9 @@ builder.Services.AddAWSService<IAmazonDynamoDB>();
 var fileStoreSettings = builder.Configuration.GetSection(nameof(FileStoreSettings)).Get<FileStoreSettings>() ?? throw new InvalidOperationException("FileStoreSettings section is not configured.");
 var s3Options = builder.Configuration.GetAWSOptions("S3");
 s3Options.Credentials = new BasicAWSCredentials(fileStoreSettings.AccessKey, fileStoreSettings.SecretKey);
+#if DEBUG
+s3Options.DefaultClientConfig.ServiceSpecificSettings.Add("ForcePathStyle", "true");
+#endif
 
 builder.Services.AddAWSService<IAmazonS3>(s3Options);
 builder.Services.AddSingleton<IDynamoDBContext, DynamoDBContext>();

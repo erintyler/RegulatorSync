@@ -98,16 +98,6 @@ public class PenumbraApiClient : IPenumbraApiClient
         var paths = _getPlayerResourcePaths.Invoke()[0];
         paths = paths.Where(IsCustomResource).ToDictionary(kv => kv.Key, kv => kv.Value);
 
-        foreach (var path in paths)
-        {
-            _logger.LogInformation("Resource Path: {Path}", path.Key);
-            
-            foreach (var subPath in path.Value)
-            {
-                _logger.LogInformation(" - {SubPath}", subPath);
-            }
-        }
-
         if (!isDownload)
         {
             var filePathsByPointer = new Dictionary<nint, HashSet<FileReplacement>>

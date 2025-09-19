@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using File = Regulator.Client.Data.Models.File;
+using Regulator.Client.Data.Models;
 
 namespace Regulator.Client.Data.Contexts;
 
@@ -9,13 +9,17 @@ public class AppDbContext : DbContext
     {
     }
     
-    public DbSet<File> Files { get; set; }
+    public DbSet<DownloadedFile> Files { get; set; }
+    public DbSet<UploadedFile> UploadedFiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<File>()
+        modelBuilder.Entity<DownloadedFile>()
+            .HasKey(f => f.Hash);
+        
+        modelBuilder.Entity<UploadedFile>()
             .HasKey(f => f.Hash);
     }
 }

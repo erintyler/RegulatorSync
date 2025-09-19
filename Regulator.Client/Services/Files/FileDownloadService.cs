@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Data.Contexts;
+using Regulator.Client.Data.Models;
 using Regulator.Client.Services.ApiClients;
 using Regulator.Client.Services.Files.Interfaces;
-using DownloadedFile = Regulator.Client.Data.Models.File;
 
 namespace Regulator.Client.Services.Files;
 

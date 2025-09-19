@@ -27,6 +27,8 @@ using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Hubs;
 using Regulator.Client.Services.Interop;
 using Regulator.Client.Services.Interop.Interfaces;
+using Regulator.Client.Services.Notifications;
+using Regulator.Client.Services.Notifications.Interfaces;
 using Regulator.Client.Services.Providers;
 using Regulator.Client.Services.Providers.Interfaces;
 using Regulator.Client.Services.Ui;
@@ -211,7 +213,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFileHashService, FileHashService>();
         services.AddSingleton<IFileUploadService, FileUploadService>();
         services.AddSingleton<IFileDownloadService, FileDownloadService>();
+        services.AddSingleton<IUploadedFileCacheService, UploadedFileCacheService>();
+        services.AddSingleton<INotificationBatchingService, NotificationBatchingService>();
         services.AddHttpClient();
+
+        services.AddMemoryCache();
 
         services.AddSingleton<AuthHeaderHandler>();
 

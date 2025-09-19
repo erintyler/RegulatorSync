@@ -14,7 +14,12 @@ using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Client.Services.Files;
 
-public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientFactory, IRegulatorServerMethods client, ILogger<FileUploadService> logger) : IFileUploadService
+public class FileUploadService(
+    IFileApi fileApi, 
+    IHttpClientFactory  httpClientFactory,
+    IRegulatorServerMethods client, 
+    IUploadedFileCacheService uploadedFileCacheService,
+    ILogger<FileUploadService> logger) : IFileUploadService
 {
     public async Task UploadFileAsync(string compressedFilePath, string uncompressedHash, string originalFileExtension, CancellationToken cancellationToken = default)
     {
@@ -51,6 +56,8 @@ public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientF
 
             await fileApi.FinalizeUploadAsync(uncompressedHash, cancellationToken);
             logger.LogInformation("File {FilePath} uploaded successfully", compressedFilePath);
+            
+            await uploadedFileCacheService.MarkFileAsUploadedAsync(uncompressedHash);
         }
         catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.Conflict)
         {
@@ -62,7 +69,14 @@ public class FileUploadService(IFileApi fileApi, IHttpClientFactory  httpClientF
     {
         try
         {
+            if (await uploadedFileCacheService.IsFileUploadedAsync(uncompressedHash))
+            {
+                return true;
+            }
+            
             await fileApi.CheckFileExistsAsync(uncompressedHash, cancellationToken);
+            await uploadedFileCacheService.MarkFileAsUploadedAsync(uncompressedHash);
+            
             return true;
         }
         catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.NotFound)

@@ -25,7 +25,7 @@ public class NotificationBatchingService : INotificationBatchingService, IDispos
     {
         _regulatorServerMethods = regulatorServerMethods;
         _logger = logger;
-        var batchInterval = TimeSpan.FromSeconds(2); // Default 2 second batching
+        var batchInterval = TimeSpan.FromMilliseconds(500); // Default 2 second batching
 
         _batchTimer = new Timer(OnTimerElapsed, null, batchInterval, batchInterval);
     }

@@ -10,6 +10,7 @@ using Glamourer.Api.IpcSubscribers.Legacy;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Enums;
 using Regulator.Client.Events.Client.Glamourer;
+using Regulator.Client.Models;
 using Regulator.Client.Services.Interop.Interfaces;
 using Regulator.Client.Services.Providers.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
@@ -29,6 +30,7 @@ public class GlamourerApiClient : IGlamourerApiClient
     
     private readonly GetStateBase64 _getAllCustomizations;
     private readonly ApplyState _applyState;
+    private readonly RevertState _revertState;
     
     private readonly EventSubscriber<IntPtr, StateChangeType> _stateChangedSubscriber;
 
@@ -55,11 +57,18 @@ public class GlamourerApiClient : IGlamourerApiClient
         _playerProvider = playerProvider;
         _getAllCustomizations = new GetStateBase64(pluginInterface);
         _applyState = new ApplyState(pluginInterface);
+        _revertState = new RevertState(pluginInterface);
 
         _stateChangedSubscriber = StateChangedWithType.Subscriber(pluginInterface);
         _stateChangedSubscriber.Event += OnStateChanged;
         
         _dependencyMonitoringService.OnGlamourerStateChanged += OnGlamourerStateChanged;
+        _playerProvider.OnPlayerLeft += OnPlayerLeft;
+    }
+
+    private void OnPlayerLeft(Player player)
+    {
+        _revertState.Invoke(player.ObjectIndex);
     }
 
     public Task<GlamourerApiEc> ResetCustomizationsAsync(string syncCode)

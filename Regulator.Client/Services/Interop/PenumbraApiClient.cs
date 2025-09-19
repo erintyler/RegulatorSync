@@ -57,7 +57,6 @@ public class PenumbraApiClient : IPenumbraApiClient
         _gameObjectResourcePathResolved = GameObjectResourcePathResolved.Subscriber(pluginInterface, OnGameObjectResourcePathResolved);
         
         _playerProvider.OnPlayerSeen += OnPlayerSeen;
-        _playerProvider.OnPlayerLeft += OnPlayerLeft;
     }
 
     // TODO: Add actual comment. (This is for transient resources like emotes)
@@ -195,25 +194,6 @@ public class PenumbraApiClient : IPenumbraApiClient
         
         var result = _assignTemporaryCollection.Invoke(collectionId, player.ObjectIndex);
     }
-    
-    private void OnPlayerLeft(Player player)
-    {
-        if (!_temporaryCollections.TryGetValue(player.SyncCode, out var collectionId))
-        {
-            return;
-        }
-        
-        var result = _deleteTemporaryCollection.Invoke(collectionId);
-            
-        if (result is not PenumbraApiEc.Success)
-        {
-            _logger.LogWarning("Failed to delete temporary Penumbra collection for sync code {SyncCode}: {Result}", player.SyncCode, result);
-            return;
-        }
-            
-        _logger.LogInformation("Deleted temporary Penumbra collection {CollectionId} for sync code {SyncCode}", collectionId, player.SyncCode);
-        _temporaryCollections.Remove(player.SyncCode);
-    }
 
     private void OnPlayerSeen(Player player)
     {
@@ -236,7 +216,6 @@ public class PenumbraApiClient : IPenumbraApiClient
     {
         _gameObjectResourcePathResolved.Dispose();
         _playerProvider.OnPlayerSeen -= OnPlayerSeen;
-        _playerProvider.OnPlayerLeft -= OnPlayerLeft;
         
         GC.SuppressFinalize(this);
     }

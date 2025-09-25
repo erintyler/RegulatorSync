@@ -11,6 +11,8 @@ using Regulator.Services.Files.Services;
 using Regulator.Services.Files.Services.Interfaces;
 using Regulator.Services.Files.Shared.Dtos.Requests;
 using Regulator.Services.Files.Shared.Dtos.Responses;
+using Regulator.Services.Files.Shared.Services;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 using Regulator.Services.Shared.Configuration;
 using Regulator.Services.Shared.Configuration.Models;
 using Regulator.Services.Shared.Services;
@@ -65,6 +67,8 @@ builder.Services.AddAWSService<IAmazonS3>(s3Options);
 builder.Services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
 builder.Services.AddSingleton<IFileStore, S3FileStore>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddSingleton<ICompressionService, CompressionService>();
+builder.Services.AddSingleton<IFileHashService, FileHashService>();
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IFileRepository, FileRepository>();

@@ -72,7 +72,7 @@ public class UploadFilesHandler(
     
     private async Task SendNotifyAsync(FileReplacement fileReplacement, string hash, CancellationToken cancellationToken = default)
     {
-        var dto = new ResourceDto(fileReplacement.OriginalPath, hash);
+        var dto = new ResourceDto(hash, fileReplacement.OriginalPath);
         
         await notificationBatchingService.QueueResourceAsync(dto, cancellationToken);
     }

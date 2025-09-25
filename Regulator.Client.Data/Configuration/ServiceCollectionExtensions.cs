@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<AppDbContext>(o =>
         {
             // Use SQLite database
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Regulator", "regulator_client.db");
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Neurilink", "neurilink_client.db");
             Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
             
             o.UseSqlite($"Data Source={dbPath}");

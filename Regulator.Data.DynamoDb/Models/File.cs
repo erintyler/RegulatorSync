@@ -18,4 +18,7 @@ public class File
     public required string UploadedByDiscordId { get; set; }
     
     public required string FileExtension { get; set; }
+    
+    public DateTime StartedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
 }

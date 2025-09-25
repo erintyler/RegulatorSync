@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin;
@@ -6,7 +7,6 @@ using Dalamud.Plugin.Services;
 using Glamourer.Api.Enums;
 using Glamourer.Api.Helpers;
 using Glamourer.Api.IpcSubscribers;
-using Glamourer.Api.IpcSubscribers.Legacy;
 using Microsoft.Extensions.Logging;
 using Regulator.Client.Enums;
 using Regulator.Client.Events.Client.Glamourer;
@@ -33,6 +33,8 @@ public class GlamourerApiClient : IGlamourerApiClient
     private readonly RevertState _revertState;
     
     private readonly EventSubscriber<IntPtr, StateChangeType> _stateChangedSubscriber;
+    
+    private readonly ConcurrentDictionary<string, string> _pendingCustomizations = new();
 
     public bool ApiAvailable { get; private set; }
     
@@ -63,7 +65,19 @@ public class GlamourerApiClient : IGlamourerApiClient
         _stateChangedSubscriber.Event += OnStateChanged;
         
         _dependencyMonitoringService.OnGlamourerStateChanged += OnGlamourerStateChanged;
+        _playerProvider.OnPlayerSeen += OnPlayerSeen;
         _playerProvider.OnPlayerLeft += OnPlayerLeft;
+    }
+
+    private void OnPlayerSeen(Player obj)
+    {
+        if (!_pendingCustomizations.TryRemove(obj.SyncCode, out var customizations))
+        {
+            return;
+        }
+        
+        _logger.LogInformation("Applying pending customizations for player {PlayerName} ({SyncCode})", obj.Name, obj.SyncCode);
+        _ = ApplyCustomizationsAsync(obj.SyncCode, customizations);
     }
 
     private void OnPlayerLeft(Player player)
@@ -79,10 +93,12 @@ public class GlamourerApiClient : IGlamourerApiClient
     public async Task<GlamourerApiEc> ApplyCustomizationsAsync(string syncCode, string customizations)
     {
         var player = _playerProvider.GetCachedPlayerBySyncCode(syncCode);
+        _pendingCustomizations.TryRemove(syncCode, out _);
         
         if (player is null)
         {
             _logger.LogWarning("No player found for sync code {SyncCode} when applying customizations.", syncCode);
+            _pendingCustomizations.TryAdd(syncCode, customizations);
             return GlamourerApiEc.ActorNotFound;
         }
         

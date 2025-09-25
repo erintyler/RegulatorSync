@@ -14,7 +14,6 @@ public class DatabaseMigrationService(IServiceProvider serviceProvider, ILogger<
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         
         logger.LogInformation("Applying database migrations...");
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
         await dbContext.Database.MigrateAsync(cancellationToken);
         logger.LogInformation("Database migrations applied successfully.");
     }

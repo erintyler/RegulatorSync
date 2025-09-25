@@ -48,6 +48,21 @@ public class OnlineUserService(
         logger.LogInformation("User {User} set to online with character ID {CharacterId}.", user.SyncCode, characterId);
     }
 
+    public async Task UpdateCustomizationsAsync(User user, string? customizations)
+    {
+        var onlineUser = await onlineUserRepository.GetByIdAsync(user.SyncCode);
+        if (onlineUser is null)
+        {
+            logger.LogWarning("Attempted to set customizations for offline user {User}.", user.SyncCode);
+            return;
+        }
+
+        onlineUser.CurrentCustomizations = customizations;
+        await onlineUserRepository.SaveAsync(onlineUser);
+        
+        logger.LogInformation("Set customizations for user {User}.", user.SyncCode);
+    }
+
     public async Task SetUserOfflineAsync()
     {
         var user = await GetCurrentUserAsync();
@@ -78,6 +93,7 @@ public class OnlineUserService(
             {
                 SyncCode = u!.Id,
                 CharacterId = u.CharacterId,
+                CurrentCustomizations = u.CurrentCustomizations,
             })
             .ToList();
         

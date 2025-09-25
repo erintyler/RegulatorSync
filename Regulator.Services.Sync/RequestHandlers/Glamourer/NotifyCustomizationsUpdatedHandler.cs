@@ -3,13 +3,18 @@ using Microsoft.AspNetCore.SignalR;
 using Regulator.Services.Shared.Services.Interfaces;
 using Regulator.Services.Sync.Hubs;
 using Regulator.Services.Sync.RequestHandlers.Interfaces;
+using Regulator.Services.Sync.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
 using Regulator.Services.Sync.Shared.Dtos.Server.Glamourer;
 using Regulator.Services.Sync.Shared.Hubs;
 
 namespace Regulator.Services.Sync.RequestHandlers.Glamourer;
 
-public class NotifyCustomizationsUpdatedHandler(IUserContextService userContextService, IHubContext<RegulatorHub, IRegulatorClientMethods> context, ILogger<NotifyCustomizationsUpdatedHandler> logger) : IRequestHandler<NotifyCustomizationsUpdatedDto>
+public class NotifyCustomizationsUpdatedHandler(
+    IUserContextService userContextService, 
+    IOnlineUserService onlineUserService,
+    IHubContext<RegulatorHub, IRegulatorClientMethods> context, 
+    ILogger<NotifyCustomizationsUpdatedHandler> logger) : IRequestHandler<NotifyCustomizationsUpdatedDto>
 {
     public async Task HandleAsync(NotifyCustomizationsUpdatedDto dto, CancellationToken cancellationToken = default)
     {
@@ -20,12 +25,13 @@ public class NotifyCustomizationsUpdatedHandler(IUserContextService userContextS
             throw new InvalidOperationException(userResult.ErrorMessage);
         }
         
+        await onlineUserService.UpdateCustomizationsAsync(userResult.Value, dto.GlamourerData);
+        
         logger.LogInformation("Received new customizations for sync code {SyncCode}", userResult.Value.SyncCode);
         
         var receiveCustomizations = new ReceiveCustomizationsDto
         {
-            SourceSyncCode = userResult.Value.SyncCode,
-            GlamourerData = dto.GlamourerData
+            Customizations = [new UserCustomizationDto(userResult.Value.SyncCode, dto.GlamourerData)]
         };
 
         if (string.IsNullOrWhiteSpace(dto.TargetSyncCode))

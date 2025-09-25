@@ -10,6 +10,7 @@ public interface IPlayerProvider
     Player? GetCachedPlayerByHash(ulong hash);
     Player? GetPlayerByHash(string syncCode, ulong hash);
     Player? GetPendingPlayerBySyncCode(string syncCode);
+    void ClearUnsyncedObjectIds();
 
     event Action<Player>? OnPlayerSeen;
     event Action<Player>? OnPlayerLeft;

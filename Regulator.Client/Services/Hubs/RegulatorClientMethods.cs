@@ -23,7 +23,6 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
     public Task StartAsync(CancellationToken cancellationToken)
     {
         connection.On<CustomizationRequestDto>(nameof(OnCustomizationRequestAsync), OnCustomizationRequestAsync);
-        connection.On<CustomizationsResetDto>(nameof(OnCustomizationsResetAsync), OnCustomizationsResetAsync);
         connection.On<ReceiveCustomizationsDto>(nameof(OnReceiveCustomizationsAsync), OnReceiveCustomizationsAsync);
         connection.On<ConnectedDto>(nameof(OnConnectedAsync), OnConnectedAsync);
         connection.On<ReceiveSyncRequestDto>(nameof(OnReceiveSyncRequestAsync), OnReceiveSyncRequestAsync);
@@ -37,7 +36,6 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
     public Task StopAsync(CancellationToken cancellationToken)
     {
         connection.Remove(nameof(OnCustomizationRequestAsync));
-        connection.Remove(nameof(OnCustomizationsResetAsync));
         connection.Remove(nameof(OnReceiveCustomizationsAsync));
         connection.Remove(nameof(OnConnectedAsync));
         connection.Remove(nameof(OnReceiveSyncRequestAsync));
@@ -53,22 +51,21 @@ public class RegulatorClientMethods(HubConnection connection, IMediator mediator
         throw new System.NotImplementedException();
     }
 
-    public async Task OnCustomizationsResetAsync(CustomizationsResetDto customizationsResetDto)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public async Task OnReceiveCustomizationsAsync(ReceiveCustomizationsDto receiveCustomizationsDto)
     {
-        var receiveCustomizations = new ReceiveCustomizations(receiveCustomizationsDto.SourceSyncCode!, receiveCustomizationsDto.GlamourerData);
-        
-        await mediator.PublishAsync(receiveCustomizations);
+        var customizations = receiveCustomizationsDto.Customizations
+            .Select(c => new ReceiveCustomizations(c.SyncCode, c.Customizations ?? string.Empty));
+
+        foreach (var customization in customizations)
+        {
+            await mediator.PublishAsync(customization);
+        }
     }
 
     public async Task OnConnectedAsync(ConnectedDto connectedDto)
     {
         var onlineUsers = connectedDto.OnlineUsers
-            .Select(u => new OnlineUser(u.SyncCode, u.CharacterId))
+            .Select(u => new OnlineUser(u.SyncCode, u.CharacterId, u.CurrentCustomizations ?? string.Empty))
             .ToList();
         
         var onConnected = new OnConnected(connectedDto.SyncCode, connectedDto.AddedSyncCodes, onlineUsers);

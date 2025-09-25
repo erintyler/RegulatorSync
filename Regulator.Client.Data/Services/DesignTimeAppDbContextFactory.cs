@@ -8,7 +8,7 @@ public class DesignTimeAppDbContextFactory : IDesignTimeDbContextFactory<AppDbCo
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Regulator", "regulator_client.db");
+        var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Neurilink", "neurilink_client.db");
         Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
         
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();

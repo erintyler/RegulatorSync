@@ -124,16 +124,6 @@ public class RegulatorServerClient(
         }
     }
 
-    public async Task NotifyCustomizationsResetAsync(CustomizationsResetDto dto)
-    {
-        if (connection.State is not HubConnectionState.Connected)
-        {
-            return;
-        }
-        
-        await connection.SendAsync(nameof(NotifyCustomizationsResetAsync), dto);
-    }
-
     public async Task NotifyCustomizationsUpdatedAsync(NotifyCustomizationsUpdatedDto dto)
     {
         if (connection.State is not HubConnectionState.Connected)

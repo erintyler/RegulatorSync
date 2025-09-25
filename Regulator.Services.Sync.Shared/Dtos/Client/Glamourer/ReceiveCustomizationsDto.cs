@@ -6,7 +6,7 @@ namespace Regulator.Services.Sync.Shared.Dtos.Client.Glamourer;
 /// Receives customizations for a paired client.
 /// Sent to the client in response to <seealso cref="RequestCustomizationsDto"/>
 /// </summary>
-public class ReceiveCustomizationsDto : BaseSyncDto
+public class ReceiveCustomizationsDto
 {
-    public required string GlamourerData { get; set; }
+    public required List<UserCustomizationDto> Customizations { get; set; }
 }

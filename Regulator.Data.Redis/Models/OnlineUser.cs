@@ -11,6 +11,9 @@ public class OnlineUser : ICacheModel<string>
     [Key(1)]
     public ulong CharacterId { get; set; }
     
+    [Key(2)]
+    public string? CurrentCustomizations { get; set; }
+    
     [IgnoreMember]
     public string Key { get; }
 }

@@ -62,7 +62,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHandlers(this IServiceCollection services)
     {
         // Client event handlers
-        services.AddHostedService<ClientHandlers.Glamourer.CustomizationsResetHandler>();
         services.AddHostedService<CustomizationsUpdatedHandler>();
         services.AddHostedService<RequestCustomizationsHandler>();
         services.AddHostedService<NotificationMessageHandler>();

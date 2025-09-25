@@ -54,7 +54,6 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserCreationService, UserCreationService>();
 builder.Services.AddScoped<IOnlineUserService, OnlineUserService>();
 
-builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsResetDto>, NotifyCustomizationsResetHandler>();
 builder.Services.AddScoped<IRequestHandler<NotifyCustomizationsUpdatedDto>, NotifyCustomizationsUpdatedHandler>();
 builder.Services.AddScoped<IRequestHandler<RequestCustomizationsDto>, RequestCustomizationsHandler>();
 builder.Services.AddScoped<IRequestHandler<SyncRequestDto>, SyncRequestHandler>();

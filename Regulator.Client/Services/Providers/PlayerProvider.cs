@@ -20,7 +20,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     private readonly ConcurrentDictionary<ulong, Player> _visiblePlayersByHash = new();
     private readonly ConcurrentDictionary<string, Player> _pendingPlayersBySyncCode = new();
     private readonly ConcurrentDictionary<uint, ulong> _objectIdToHash = new();
-    private readonly HashSet<uint> _unsyncedObjectIds = [];
+    private readonly ConcurrentDictionary<uint, byte> _unsyncedObjectIds = [];
     
     private readonly ICharacterHashProvider _hashProvider;
     private readonly IClientState _clientState;
@@ -77,6 +77,11 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
     {
         return _visiblePlayersByHash.GetValueOrDefault(hash);
     }
+    
+    public void ClearUnsyncedObjectIds()
+    {
+        _unsyncedObjectIds.Clear();
+    }
 
     public unsafe Player? GetPlayerByHash(string syncCode, ulong hash)
     {
@@ -120,8 +125,6 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
         return player;
     }
 
-    public Action<Player>? OnPlayerAdded { get; set; }
-
     public unsafe void UpdateVisiblePlayers(IFramework framework)
     {
         try
@@ -135,10 +138,10 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
         
             foreach (var obj in _objectTable.CharacterManagerObjects.Where(o => o.ObjectKind is ObjectKind.Player))
             {
-                //if (_unsyncedObjectIds.Contains(obj.EntityId))
-                //{
-                //    continue;
-                //}
+                if (_unsyncedObjectIds.ContainsKey(obj.EntityId))
+                {
+                    continue;
+                }
                 
                 var cachedHash = _objectIdToHash.GetValueOrDefault(obj.EntityId);
 
@@ -164,7 +167,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
                 var syncCode = _syncCodeProvider.GetSyncCodeByHash(hash);
                 if (string.IsNullOrWhiteSpace(syncCode))
                 {
-                    //_unsyncedObjectIds.Add(obj.EntityId);
+                    _unsyncedObjectIds.TryAdd(obj.EntityId, 0);
                     continue;
                 }
 
@@ -172,7 +175,7 @@ public class PlayerProvider : IPlayerProvider, IHostedService, IDisposable
             
                 _visiblePlayersByHash.TryAdd(hash, player);
                 _objectIdToHash.TryAdd(obj.EntityId, hash);
-                //_unsyncedObjectIds.Remove(obj.EntityId);
+                _unsyncedObjectIds.TryRemove(obj.EntityId, out _);
                 seenHashes.Add(hash);
                 
                 _logger.Info("Added visible player: {Name} ({World})", name, world);

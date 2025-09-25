@@ -9,12 +9,13 @@ using Regulator.Client.Services.Utilities.Interfaces;
 
 namespace Regulator.Client.Handlers.Server.Connection;
 
-public class ClientOnlineHandler(ICharacterHashProvider characterHashProvider, ISyncCodeProvider syncCodeProvider, IMediator mediator, ILogger<ClientOnlineHandler> logger) : BaseMediatorHostedService<ClientOnline>(mediator, logger)
+public class ClientOnlineHandler(ICharacterHashProvider characterHashProvider, ISyncCodeProvider syncCodeProvider, IPlayerProvider playerProvider, IMediator mediator, ILogger<ClientOnlineHandler> logger) : BaseMediatorHostedService<ClientOnline>(mediator, logger)
 {
     public override async Task HandleAsync(ClientOnline eventData, CancellationToken cancellationToken = default)
     {
         characterHashProvider.AddOrUpdateHash(eventData.SourceSyncCode, eventData.CharacterHash);
         syncCodeProvider.AddSyncCode(eventData.CharacterHash, eventData.SourceSyncCode);
+        playerProvider.ClearUnsyncedObjectIds();
         
         var requestCustomizations = new RequestCustomizations(eventData.SourceSyncCode);
         await mediator.PublishAsync(requestCustomizations, cancellationToken);

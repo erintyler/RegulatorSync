@@ -4,4 +4,5 @@ public class OnlineUserDto
 {
     public required string SyncCode { get; set; }
     public required ulong CharacterId { get; set; }
+    public string? CurrentCustomizations { get; set; }
 }

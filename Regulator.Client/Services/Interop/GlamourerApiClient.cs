@@ -69,15 +69,17 @@ public class GlamourerApiClient : IGlamourerApiClient
         _playerProvider.OnPlayerLeft += OnPlayerLeft;
     }
 
-    private void OnPlayerSeen(Player obj)
+    private void OnPlayerSeen(Player player)
     {
-        if (!_pendingCustomizations.TryRemove(obj.SyncCode, out var customizations))
+        if (!_pendingCustomizations.TryRemove(player.SyncCode, out var customizations))
         {
+            var requestCustomizations = new RequestCustomizations(player.SyncCode);
+            _mediator.PublishAsync(requestCustomizations);
             return;
         }
         
-        _logger.LogInformation("Applying pending customizations for player {PlayerName} ({SyncCode})", obj.Name, obj.SyncCode);
-        _ = ApplyCustomizationsAsync(obj.SyncCode, customizations);
+        _logger.LogInformation("Applying pending customizations for player {PlayerName} ({SyncCode})", player.Name, player.SyncCode);
+        _ = ApplyCustomizationsAsync(player.SyncCode, customizations);
     }
 
     private void OnPlayerLeft(Player player)

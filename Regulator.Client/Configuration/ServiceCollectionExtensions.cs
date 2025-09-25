@@ -180,7 +180,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCommands(this IServiceCollection services)
     {
         services.AddHostedCommand<AddSyncCodeCommand>();
-        services.AddHostedCommand<LoginCommand>();
         services.AddHostedCommand<ShowWindowCommand>();
         
         return services;

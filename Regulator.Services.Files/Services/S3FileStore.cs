@@ -52,4 +52,15 @@ public async Task<string> GetPresignedUploadUrlAsync(string uncompressedHash, in
             return false;
         }
     }
+
+    public async Task<Stream> GetFileAsync(string uncompressedHash, CancellationToken cancellationToken = default)
+    {
+        var response = await client.GetObjectAsync(new GetObjectRequest
+        {
+            BucketName = settings.Value.BucketName,
+            Key = uncompressedHash
+        }, cancellationToken);
+
+        return response.ResponseStream;
+    }
 }

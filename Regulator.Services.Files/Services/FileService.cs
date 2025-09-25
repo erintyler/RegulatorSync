@@ -2,12 +2,19 @@
 using Regulator.Data.DynamoDb.Repositories.Interfaces;
 using Regulator.Services.Files.Services.Interfaces;
 using Regulator.Services.Files.Shared.Dtos.Responses;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 using Regulator.Services.Shared.Services.Interfaces;
 using File = Regulator.Data.DynamoDb.Models.File;
 
 namespace Regulator.Services.Files.Services;
 
-public class FileService(IUserContextService userContextService, IFileRepository fileRepository, IFileStore fileStore, ILogger<FileService> logger) : IFileService
+public class FileService(
+    IUserContextService userContextService, 
+    ICompressionService compressionService,
+    IFileRepository fileRepository, 
+    IFileStore fileStore, 
+    IFileHashService fileHashService,
+    ILogger<FileService> logger) : IFileService
 {
     public async Task<bool> CheckFileExistsAsync(string uncompressedHash, CancellationToken cancellationToken = default)
     {
@@ -86,6 +93,8 @@ public class FileService(IUserContextService userContextService, IFileRepository
             {
                 throw new UnauthorizedAccessException("You are not authorized to finalize this upload.");
             }
+            
+            await ValidateFileHashAsync(uncompressedHash, cancellationToken);
 
             file.UploadStatus = UploadStatus.Uploaded;
             await fileRepository.UpsertAsync(file, cancellationToken);
@@ -94,6 +103,19 @@ public class FileService(IUserContextService userContextService, IFileRepository
         {
             logger.LogError(ex, "Error finalizing upload for file with hash {Hash}", uncompressedHash);
             throw;
+        }
+    }
+    
+    private async Task ValidateFileHashAsync(string uncompressedHash, CancellationToken cancellationToken = default)
+    {
+        await using var stream = await fileStore.GetFileAsync(uncompressedHash, cancellationToken);
+        await using var decompressedStream = await compressionService.DecompressToStreamAsync(stream);
+        
+        var computedHash = await fileHashService.ComputeHashAsync(decompressedStream);
+        
+        if (!string.Equals(uncompressedHash, computedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("File hash does not match the expected hash.");
         }
     }
 }

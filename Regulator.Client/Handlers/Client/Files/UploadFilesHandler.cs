@@ -11,6 +11,7 @@ using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Hosting;
 using Regulator.Client.Services.Notifications.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Dtos.Server.Penumbra;
 
 namespace Regulator.Client.Handlers.Client.Files;

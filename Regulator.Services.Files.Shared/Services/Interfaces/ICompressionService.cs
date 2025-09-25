@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace Regulator.Client.Services.Files.Interfaces;
+﻿namespace Regulator.Services.Files.Shared.Services.Interfaces;
 
 public interface ICompressionService
 {

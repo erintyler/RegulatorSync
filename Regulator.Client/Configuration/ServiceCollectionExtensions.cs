@@ -36,6 +36,8 @@ using Regulator.Client.Services.Ui.Interfaces;
 using Regulator.Client.Services.Utilities;
 using Regulator.Client.Services.Utilities.Interfaces;
 using Regulator.Client.Windows;
+using Regulator.Services.Files.Shared.Services;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 using Regulator.Services.Sync.Shared.Hubs;
 using Regulator.Services.Sync.Shared.Services;
 using Regulator.Services.Sync.Shared.Services.Interfaces;

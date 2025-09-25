@@ -17,6 +17,7 @@ using Regulator.Client.Services.Files.Interfaces;
 using Regulator.Client.Services.Interop.Interfaces;
 using Regulator.Client.Services.Providers.Interfaces;
 using Regulator.Client.Services.Utilities.Interfaces;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 
 namespace Regulator.Client.Services.Interop;
 

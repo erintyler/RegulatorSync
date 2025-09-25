@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Regulator.Client.Services.Files.Interfaces;
+﻿using Regulator.Services.Files.Shared.Services.Interfaces;
 
-namespace Regulator.Client.Services.Files;
+namespace Regulator.Services.Files.Shared.Services;
 
 public class FileHashService : IFileHashService
 {

@@ -9,6 +9,7 @@ using Regulator.Client.Data.Contexts;
 using Regulator.Client.Data.Models;
 using Regulator.Client.Services.ApiClients;
 using Regulator.Client.Services.Files.Interfaces;
+using Regulator.Services.Files.Shared.Services.Interfaces;
 
 namespace Regulator.Client.Services.Files;
 
